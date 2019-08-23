@@ -57,7 +57,7 @@ class SandboxedNode:
             self.__parameters = normalize_parameters(parameters)
         
         self.__remappings = None
-        if __remappings is not None:
+        if remappings is not None:
             self.__remappings = normalize_remap_rules(remappings)
         
     @property
@@ -83,3 +83,4 @@ class SandboxedNode:
     @property
     def remappings(self) -> Optional[RemapRules]:
         """ Get node remapping rules as (from, to) tuples with substitutions to be performed. """
+        return self.__remappings

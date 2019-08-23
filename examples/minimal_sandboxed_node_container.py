@@ -24,11 +24,19 @@ def generate_launch_description():
 
     ld.add_action(
         launch_ros_sandbox.actions.SandboxedNodeContainer(
-
+            sandbox_name = 'my_sandbox',
+            node_descriptions = [
+                launch_ros_sandbox.descriptions.SandboxedNode(
+                    package = 'demo_nodes_cpp',
+                    node_executable = 'talker',
+                ),
+                launch_ros_sandbox.descriptions.SandboxedNode(
+                    package = 'demo_nodes_cpp',
+                    node_executable = 'listener'
+                )
+            ]
         )
     )
-
-    print("OK!")
 
     return ld
 
