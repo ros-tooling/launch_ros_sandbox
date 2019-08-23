@@ -17,7 +17,10 @@ import launch_ros_sandbox
 
 def generate_launch_description():
     """
-    Create launch description for starting SandboxedNodeContainer
+    Create launch description for starting SandboxedNodeContainer.
+
+    Two nodes are loaded into the sandboxed container: talker and listener. No operation is performed since
+    no sandboxing policy was defined.
     """
 
     ld = launch.LaunchDescription()
@@ -42,7 +45,7 @@ def generate_launch_description():
 
 if __name__ == "__main__":
     """
-    Starts the SandboxedNodeContainer example as a script.
+    Starts the SandboxedNodeContainer example as a script.    
     """
 
     ls = launch.LaunchService(argv=sys.argv[1:])

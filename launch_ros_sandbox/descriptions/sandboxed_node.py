@@ -1,7 +1,6 @@
 # Copyright FIXME
 
-"""
-"""
+""" Module for SandboxedNode. """
 
 from typing import Iterable
 from typing import List
@@ -22,6 +21,7 @@ from launch_ros.utilities import normalize_remap_rules
 
 class SandboxedNode:
     """
+    SandboxedNode describes the launch configurations for a node that will run inside a sandbox environment.
     """
     
     def __init__(
@@ -39,6 +39,13 @@ class SandboxedNode:
         Constructs a SandboxedNode description.
 
         The actual node execution is delegated to the sandboxing environment defined by the policy.
+
+        :param: package is the name of the node's package and is required for resolving the node.
+        :param: node_executable is the name of the node's executable and is required for resolving the node.
+        :param: node_name is an optional name attached to the node when it is launched. Defaults to NONE.
+        :param: node_namespace is an optional namespace attached to the node when it is launched. Defaults to empty string.
+        :param: parameters are the optional runtime configurations for the node, read from a YAML file. Defaults to NONE.
+        :param: remappings are the ordered list of 'to' and 'from' string pairs to be passed to a node as ROS remapping rules.
         """
 
         self.__package = normalize_to_list_of_substitutions(package)

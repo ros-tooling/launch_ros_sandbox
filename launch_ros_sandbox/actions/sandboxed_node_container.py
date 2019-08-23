@@ -11,24 +11,27 @@ from launch.utilities import normalize_to_list_of_substitutions
 
 from launch_ros_sandbox.descriptions import SandboxedNode
 
-""" 
-Module for SandboxedNodeContainer class.
-"""
+""" Module for SandboxedNodeContainer class. """
 
 class SandboxedNodeContainer(Action):
     """
-    SandboxedNodeContainer
+    SandboxedNodeContainer is an action that launches nodes within a sandboxed environment.
     """
 
     def __init__(
         self,
         *,
         sandbox_name: Optional[SomeSubstitutionsType] = None,
+        policy = None,
         node_descriptions: Optional[List[SandboxedNode]] = None,
         **kwargs
     ) -> None:
         """
-        Initializes the SandboxedNodeContainer
+        Initializes the SandboxedNodeContainer.
+
+        :param: sandbox_name is an optional name assigned to the sandbox environment.
+        :param: policy defines the sandboxing strategy used by the sandbox environment.
+        :param: node_descriptions are the list of nodes to launch inside the sandbox environment.
         """
 
         super().__init__(**kwargs)
@@ -46,7 +49,9 @@ class SandboxedNodeContainer(Action):
         context: LaunchContext
     ) -> Optional[List[Action]]:
         """
-        Executes the SandboxedNodeContainer
+        Executes the SandboxedNodeContainer.
+
+        All node descriptions defined will be launched inside the sandbox defined by the policy.
         """
 
         pass
