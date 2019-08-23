@@ -3,17 +3,18 @@
 # Copyright FIXME
 
 """
-    Minimal example for using SandboxedNodeContainer
+Minimal example for using SandboxedNodeContainer.
 
-    This example runs a ROS 2 node in a sandboxed environment by invoking SandboxedNodeContainer action.
-    SandboxedNodeContainer delegates the launch parameters to an instance of launch_ros that is running in
-    a sandboxed environment using the requested sandboxing policy.
-    """
+This example runs a ROS 2 node in a sandboxed environment by invoking SandboxedNodeContainer action.
+SandboxedNodeContainer delegates the launch parameters to an instance of launch_ros that is running in
+a sandboxed environment using the requested sandboxing policy.
+"""
 
 import sys
 
 import launch
 import launch_ros_sandbox
+
 
 def generate_launch_description():
     """
@@ -22,20 +23,19 @@ def generate_launch_description():
     Two nodes are loaded into the sandboxed container: talker and listener. No operation is performed since
     no sandboxing policy was defined.
     """
-
     ld = launch.LaunchDescription()
 
     ld.add_action(
         launch_ros_sandbox.actions.SandboxedNodeContainer(
-            sandbox_name = 'my_sandbox',
-            node_descriptions = [
+            sandbox_name='my_sandbox',
+            node_descriptions=[
                 launch_ros_sandbox.descriptions.SandboxedNode(
-                    package = 'demo_nodes_cpp',
-                    node_executable = 'talker',
+                    package='demo_nodes_cpp',
+                    node_executable='talker',
                 ),
                 launch_ros_sandbox.descriptions.SandboxedNode(
-                    package = 'demo_nodes_cpp',
-                    node_executable = 'listener'
+                    package='demo_nodes_cpp',
+                    node_executable='listener'
                 )
             ]
         )
@@ -43,10 +43,9 @@ def generate_launch_description():
 
     return ld
 
-if __name__ == "__main__":
-    """
-    Starts the SandboxedNodeContainer example as a script.    
-    """
+
+if __name__ == '__main__':
+    """Starts the SandboxedNodeContainer example as a script."""
 
     ls = launch.LaunchService(argv=sys.argv[1:])
     ls.include_launch_description(generate_launch_description())
