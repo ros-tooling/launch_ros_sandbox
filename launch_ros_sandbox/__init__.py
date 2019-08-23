@@ -4,8 +4,8 @@
 Package for launch_ros_sandbox.actions
 """
 
-from . import actions
-from . import descriptions
+from launch_ros_sandbox import actions
+from launch_ros_sandbox import descriptions
 
 __all__ = [
     'actions',
