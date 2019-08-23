@@ -17,12 +17,13 @@ class SandboxedNodeContainer(Action):
 
     def __init__(
         self,
+        **kwargs
     ) -> None:
         """
         Initializes the SandboxedNodeContainer
         """
 
-        pass
+        super().__init__(**kwargs)
     
     def execute(
         self, 
