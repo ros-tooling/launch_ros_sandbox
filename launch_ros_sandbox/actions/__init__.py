@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-"""Package for launch_ros_sandbox actions."""
+""" Package for launch_ros_sandbox actions. """
 
 from launch_ros_sandbox.actions.sandboxed_node_container import SandboxedNodeContainer
 

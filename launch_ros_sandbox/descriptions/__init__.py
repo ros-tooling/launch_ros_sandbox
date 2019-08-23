@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-"""Package of launch_ros_sandbox descriptions."""
+""" Package of launch_ros_sandbox descriptions. """
 
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 from launch_ros_sandbox.descriptions.user import User
