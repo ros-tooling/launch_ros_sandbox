@@ -14,6 +14,8 @@
 
 """Module for User."""
 
+import pwd
+
 
 class User:
     """User is a pair of Unix UID and GID."""
@@ -27,6 +29,15 @@ class User:
         """Construct the User."""
         self._uid = uid
         self._gid = gid
+
+    @classmethod
+    def from_username(cls, username: str) -> 'User':
+        """Get a User object from a username string."""
+        user = pwd.getpwnam(username)
+
+        return cls(
+            uid=user.pw_uid,
+            gid=user.pw_gid)
 
     @property
     def uid(self) -> int:

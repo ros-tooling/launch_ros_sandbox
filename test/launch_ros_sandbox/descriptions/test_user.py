@@ -12,22 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the UserPolicy description."""
+"""Tests for User."""
 
 import os
 
 import unittest
 
-from launch_ros_sandbox.descriptions import UserPolicy
+from launch_ros_sandbox.descriptions import User
 
 
-class TestUserPolicy(unittest.TestCase):
+class TestUser(unittest.TestCase):
 
-    def test_defaults_to_current_user(self):
-        """Verify UserPolicy.run_as defaults to current user."""
-        current_uid = os.getuid()
-        current_gid = os.getgid()
+    def test_get_user_from_username(self):
+        """Verify User.from_username returns the correct User."""
+        uid = os.getuid()
+        gid = os.getgid()
+        username = os.getlogin()
+        user = User.from_username(username)
 
-        user_policy = UserPolicy()
-        assert current_uid == user_policy.run_as.uid
-        assert current_gid == user_policy.run_as.gid
+        assert uid == user.uid
+        assert gid == user.gid
