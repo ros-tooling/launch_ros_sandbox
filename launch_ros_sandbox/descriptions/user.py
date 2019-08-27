@@ -12,15 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Module for User."""
 
-"""Package of launch_ros_sandbox descriptions."""
 
-from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
-from launch_ros_sandbox.descriptions.user import User
-from launch_ros_sandbox.descriptions.user_policy import UserPolicy
+class User:
+    """User is a pair of Unix UID and GID."""
 
-__all__ = [
-    'SandboxedNode',
-    'User',
-    'UserPolicy',
-]
+    def __init__(
+        self,
+        *,
+        uid: int,
+        gid: int
+    ) -> None:
+        """Construct the User."""
+        self._uid = uid
+        self._gid = gid
+
+    @property
+    def uid(self) -> int:
+        """Get the User's user id."""
+        return self._uid
+
+    @property
+    def gid(self) -> int:
+        """Get the User's group id."""
+        return self._gid
