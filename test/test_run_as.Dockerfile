@@ -13,7 +13,7 @@ RUN source /opt/ros/dashing/setup.bash && \
 
 # create sandboxed ros user and execute "./examples/run_as.py" with that user.
 # the build will fail if run_as does not work.
-RUN useradd dashing && \
+RUN useradd -m dashing && \
   source /opt/ros/dashing/setup.bash && \
   cd /opt/launch_ros_sandbox && \
   ./examples/run_as.py dashing
