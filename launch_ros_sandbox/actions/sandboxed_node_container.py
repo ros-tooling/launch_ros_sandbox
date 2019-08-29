@@ -54,7 +54,7 @@ class SandboxedNodeContainer(Action):
         self.__node_descriptions = None
         if node_descriptions is not None:
             self.__node_descriptions = node_descriptions
-        
+
         self.__policy = policy
 
     def execute(
@@ -78,6 +78,6 @@ class SandboxedNodeContainer(Action):
         return None
 
     @property
-    def sandbox_name(self) -> List[Substitution]:
+    def sandbox_name(self) -> Optional[List[Substitution]]:
         """Get sandbox name as a sequence of substitutions to be performed."""
         return self.__sandbox_name

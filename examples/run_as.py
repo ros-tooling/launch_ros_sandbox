@@ -22,6 +22,7 @@ The script must be ran as root.
 The user must also exist.
 
 Usage: ./run_as ros2_user
+Expected output: ros2_user
 """
 
 import os
@@ -30,6 +31,7 @@ import subprocess
 import sys
 
 from launch_ros_sandbox.descriptions import User
+
 
 def run_as_user(user: User):
     """Parse User object and run 'whoami' as that user."""
@@ -55,6 +57,7 @@ def run_as_user(user: User):
     )
 
     assert 0 == process.wait()
+
 
 if __name__ == '__main__':
     if os.getgid() != 0 or os.getuid() != 0:

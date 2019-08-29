@@ -31,6 +31,7 @@ import sys
 
 from launch_ros_sandbox.descriptions import User
 
+
 def run_as_user(user: User):
     """Parse User object and run 'whoami' as that user."""
     pw_record = pwd.getpwuid(user.uid)
@@ -55,6 +56,7 @@ def run_as_user(user: User):
     )
 
     assert 0 == process.wait()
+
 
 if __name__ == '__main__':
     if os.getgid() != 0 or os.getuid() != 0:

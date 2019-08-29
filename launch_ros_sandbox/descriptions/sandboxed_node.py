@@ -99,7 +99,7 @@ class SandboxedNode:
         return self.__node_executable
 
     @property
-    def node_name(self) -> List[Substitution]:
+    def node_name(self) -> Optional[List[Substitution]]:
         """Get node name as a sequence of substitutions to be performed."""
         return self.__node_name
 

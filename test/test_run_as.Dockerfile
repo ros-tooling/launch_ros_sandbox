@@ -17,3 +17,5 @@ RUN useradd -m dashing && \
   source /opt/ros/dashing/setup.bash && \
   cd /opt/launch_ros_sandbox && \
   ./examples/run_as.py dashing
+
+WORKDIR /opt/launch_ros_sandbox

@@ -17,7 +17,6 @@
 import os
 import pwd
 import subprocess
-import sys
 
 from typing import List
 from typing import Optional
@@ -30,6 +29,7 @@ from launch_ros.substitutions import ExecutableInPackage
 
 from launch_ros_sandbox.descriptions import SandboxedNode
 from launch_ros_sandbox.descriptions import User
+
 
 class UserPolicy:
     """UserPolicy defines parameters for running a sandboxed node as a different user."""
@@ -52,15 +52,14 @@ class UserPolicy:
     @property
     def run_as(self) -> User:
         """Get the User to run as."""
-        return self._run_as    
+        return self._run_as
 
     def apply(
         self,
         context: LaunchContext,
         node_descriptions: List[SandboxedNode]
     ) -> None:
-        """Applies the policy any launches the ROS2 nodes in the sandbox.""" 
-
+        """Apply the policy any launches the ROS2 nodes in the sandbox."""
         user = self.run_as
         pw_record = pwd.getpwuid(user.uid)
 
@@ -74,7 +73,7 @@ class UserPolicy:
         self.__logger.debug('\thome: {}'.format(pw_record.pw_dir))
 
         def set_user():
-            """Sets the current user."""
+            """Set the current user."""
             os.setgid(user.gid)
             os.setuid(user.uid)
 
@@ -87,11 +86,11 @@ class UserPolicy:
                 context,
                 description.node_executable
             )
-            
+
             # TODO: support node namespace and node name
             # TODO: support parameters
             # TODO: support remappings
-            
+
             cmd = [ExecutableInPackage(
                 package=package_name,
                 executable=executable_name
@@ -99,10 +98,10 @@ class UserPolicy:
 
             self.__logger.info('Running: {}'.format(cmd))
 
-            process = subprocess.Popen(
+            subprocess.Popen(
                 cmd,
                 preexec_fn=set_user,
                 env=env
             )
 
-
+            # TODO: handle events for process

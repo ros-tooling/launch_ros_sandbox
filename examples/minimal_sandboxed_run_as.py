@@ -27,8 +27,8 @@ import sys
 
 import launch
 import launch_ros_sandbox
-from launch_ros_sandbox.descriptions import UserPolicy
 from launch_ros_sandbox.descriptions import User
+from launch_ros_sandbox.descriptions import UserPolicy
 
 
 def generate_launch_description():
@@ -44,7 +44,7 @@ def generate_launch_description():
         launch_ros_sandbox.actions.SandboxedNodeContainer(
             sandbox_name='my_sandbox',
             policy=UserPolicy(
-                run_as = User.from_username('dashing'),
+                run_as=User.from_username('dashing'),
             ),
             node_descriptions=[
                 launch_ros_sandbox.descriptions.SandboxedNode(
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     """Starts the SandboxedNodeContainer example as a script."""
 
     ls = launch.LaunchService(
-        argv=sys.argv[1:], 
+        argv=sys.argv[1:],
         debug=True
     )
     ls.include_launch_description(generate_launch_description())
