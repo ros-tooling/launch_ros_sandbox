@@ -54,6 +54,8 @@ class SandboxedNodeContainer(Action):
         self.__node_descriptions = None
         if node_descriptions is not None:
             self.__node_descriptions = node_descriptions
+        
+        self.__policy = policy
 
     def execute(
         self,
@@ -64,7 +66,16 @@ class SandboxedNodeContainer(Action):
 
         All node descriptions defined will be launched inside the sandbox defined by the policy.
         """
-        pass
+        if self.__node_descriptions is None:
+            return None
+
+        if self.__policy is not None:
+            self.__policy.apply(
+                context=context,
+                node_descriptions=self.__node_descriptions
+            )
+
+        return None
 
     @property
     def sandbox_name(self) -> List[Substitution]:

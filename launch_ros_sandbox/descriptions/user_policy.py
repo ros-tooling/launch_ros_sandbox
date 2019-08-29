@@ -15,11 +15,21 @@
 """Module for UserPolicy."""
 
 import os
+import pwd
+import subprocess
+import sys
 
+from typing import List
 from typing import Optional
 
-from launch_ros_sandbox.descriptions import User
+import launch
+from launch import LaunchContext
+from launch.utilities import perform_substitutions
 
+from launch_ros.substitutions import ExecutableInPackage
+
+from launch_ros_sandbox.descriptions import SandboxedNode
+from launch_ros_sandbox.descriptions import User
 
 class UserPolicy:
     """UserPolicy defines parameters for running a sandboxed node as a different user."""
@@ -30,6 +40,7 @@ class UserPolicy:
         run_as: Optional[User] = None,
     ) -> None:
         """Construct the UserPolicy."""
+        self.__logger = launch.logging.get_logger(__name__)
         # default to current user if `run_as` is undefined.
         if run_as is not None:
             self._run_as = run_as
@@ -41,4 +52,57 @@ class UserPolicy:
     @property
     def run_as(self) -> User:
         """Get the User to run as."""
-        return self._run_as
+        return self._run_as    
+
+    def apply(
+        self,
+        context: LaunchContext,
+        node_descriptions: List[SandboxedNode]
+    ) -> None:
+        """Applies the policy any launches the ROS2 nodes in the sandbox.""" 
+
+        user = self.run_as
+        pw_record = pwd.getpwuid(user.uid)
+
+        env = os.environ.copy()
+        env['HOME'] = pw_record.pw_dir
+        env['LOGNAME'] = pw_record.pw_name
+        env['USER'] = pw_record.pw_name
+        self.__logger.debug('Running as: {}'.format(pw_record.pw_name))
+        self.__logger.debug('\tuid: {}'.format(user.uid))
+        self.__logger.debug('\tgid: {}'.format(user.gid))
+        self.__logger.debug('\thome: {}'.format(pw_record.pw_dir))
+
+        def set_user():
+            """Sets the current user."""
+            os.setgid(user.gid)
+            os.setuid(user.uid)
+
+        for description in node_descriptions:
+            package_name = perform_substitutions(
+                context,
+                description.package
+            )
+            executable_name = perform_substitutions(
+                context,
+                description.node_executable
+            )
+            
+            # TODO: support node namespace and node name
+            # TODO: support parameters
+            # TODO: support remappings
+            
+            cmd = [ExecutableInPackage(
+                package=package_name,
+                executable=executable_name
+            ).perform(context)]
+
+            self.__logger.info('Running: {}'.format(cmd))
+
+            process = subprocess.Popen(
+                cmd,
+                preexec_fn=set_user,
+                env=env
+            )
+
+
