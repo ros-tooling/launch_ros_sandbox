@@ -19,14 +19,13 @@ from typing import List
 from typing import Optional
 
 import docker
-from docker.errors import APIError, ImageNotFound
+from docker.errors import ImageNotFound
 import launch
 from launch import LaunchContext
 from launch.utilities import perform_substitutions
 from launch_ros.substitutions import ExecutableInPackage
 
 from launch_ros_sandbox.descriptions import SandboxedNode
-from launch_ros_sandbox.descriptions import DockerImage
 
 DEFAULT_DOCKER_REPO = 'osrf/ros'
 DEFAULT_DOCKER_TAG = 'dashing-desktop'
@@ -53,7 +52,7 @@ class DockerPolicy:
             self._tag = DEFAULT_DOCKER_TAG if tag is None else tag
         # Format image name
         self._image_name = "{}:{}".format(self._repository, self._tag)
-        # Create low-level Docker client for streaming logs
+        # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(
             base_url='unix://var/run/docker.sock')
         self._docker_client = docker.from_env()
@@ -62,6 +61,7 @@ class DockerPolicy:
         self._load_docker_container()
 
     def _load_docker_container(self):
+        """Utility function to pull an image and then run the container."""
         try:
             # Pull the image first. Will update if already pulled.
             self.__logger.debug('Pulling image...')
@@ -87,14 +87,23 @@ class DockerPolicy:
 
     @property
     def docker_client(self):
-        return self._low_docker_client
+        """Return an instance of the Docker client."""
+        return self._docker_client
 
     def apply(
         self,
         context: LaunchContext,
         node_descriptions: List[SandboxedNode]
     ) -> None:
-        # Execute each node
+        """
+        Execute each node in the Docker container.
+
+        This function in its current state will assume that the path of the
+        executable on the host the launch file is run on is the same as the path
+        in the Docker container (ex. /opt/ros/dashing/lib).
+        TODO: Create a Launch agent in the docker container that can perform the
+              substitutions correctly.
+        """
         self.__logger.info("Executing nodes in Docker container...")
         for description in node_descriptions:
             package_name = perform_substitutions(

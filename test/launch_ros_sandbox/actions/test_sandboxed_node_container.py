@@ -20,8 +20,8 @@ from launch import LaunchDescription
 from launch import LaunchService
 
 from launch_ros_sandbox.actions import SandboxedNodeContainer
+from launch_ros_sandbox.descriptions import DockerPolicy
 from launch_ros_sandbox.descriptions import SandboxedNode
-from launch_ros_sandbox.descriptions import DockerPolicy, DockerImage
 
 
 class TestSandboxedNodeContainer(unittest.TestCase):

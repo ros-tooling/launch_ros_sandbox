@@ -16,11 +16,9 @@
 """Package of launch_ros_sandbox descriptions."""
 
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
-from launch_ros_sandbox.descriptions.docker_container import DockerImage
 from launch_ros_sandbox.descriptions.docker_policy import DockerPolicy
 
 __all__ = [
     'SandboxedNode',
-    'DockerImage',
     'DockerPolicy',
 ]
