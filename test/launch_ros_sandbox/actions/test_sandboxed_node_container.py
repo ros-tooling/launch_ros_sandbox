@@ -21,6 +21,7 @@ from launch import LaunchService
 
 from launch_ros_sandbox.actions import SandboxedNodeContainer
 from launch_ros_sandbox.descriptions import SandboxedNode
+from launch_ros_sandbox.descriptions import DockerPolicy, DockerImage
 
 
 class TestSandboxedNodeContainer(unittest.TestCase):
@@ -41,6 +42,7 @@ class TestSandboxedNodeContainer(unittest.TestCase):
         """Test launching a node."""
         node_action = SandboxedNodeContainer(
             sandbox_name='my_sandbox',
+            policy=DockerPolicy(),
             node_descriptions=[
                 SandboxedNode(
                     package='demo_nodes_cpp',

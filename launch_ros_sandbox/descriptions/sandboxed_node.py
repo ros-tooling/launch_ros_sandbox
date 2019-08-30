@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" Module for SandboxedNode. """
+"""Module for SandboxedNode."""
 
 from typing import Iterable
 from typing import List
