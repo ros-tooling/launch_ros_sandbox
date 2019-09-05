@@ -26,6 +26,7 @@ running in a sandboxed environment using the requested sandboxing policy.
 import sys
 
 import launch
+
 import launch_ros_sandbox
 from launch_ros_sandbox.descriptions import User
 from launch_ros_sandbox.descriptions import UserPolicy

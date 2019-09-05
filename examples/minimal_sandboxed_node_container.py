@@ -28,7 +28,6 @@ import sys
 import launch
 
 import launch_ros_sandbox
-from launch_ros_sandbox.descriptions import DockerPolicy, DockerImage
 
 
 def generate_launch_description():
@@ -43,7 +42,6 @@ def generate_launch_description():
     ld.add_action(
         launch_ros_sandbox.actions.SandboxedNodeContainer(
             sandbox_name='my_sandbox',
-            policy=DockerPolicy(),
             node_descriptions=[
                 launch_ros_sandbox.descriptions.SandboxedNode(
                     package='demo_nodes_cpp',

@@ -28,8 +28,7 @@ from launch_ros_sandbox.descriptions import SandboxedNode
 
 
 class SandboxedNodeContainer(Action):
-    """SandboxedNodeContainer is an action that launches nodes within a
-    sandboxed environment."""
+    """SandboxedNodeContainer is an action that launches nodes within a sandboxed environment."""
 
     def __init__(
         self,
@@ -40,16 +39,12 @@ class SandboxedNodeContainer(Action):
         **kwargs
     ) -> None:
         """
-        Initializes the SandboxedNodeContainer.
+        Initialize the SandboxedNodeContainer.
 
-        :param: sandbox_name is an optional name assigned to the sandbox
-        environment.
-        :param: policy defines the sandboxing strategy used by the sandbox
-        environment.
-        :param: node_descriptions are the list of nodes to launch inside the
-        sandbox environment.
+        :param: sandbox_name is an optional name assigned to the sandbox environment.
+        :param: policy defines the sandboxing strategy used by the sandbox environment.
+        :param: node_descriptions are the list of nodes to launch inside the sandbox environment.
         """
-
         super().__init__(**kwargs)
 
         self.__sandbox_name = None
@@ -69,10 +64,9 @@ class SandboxedNodeContainer(Action):
         context: LaunchContext
     ) -> Optional[List[Action]]:
         """
-        Executes the SandboxedNodeContainer.
+        Execute the SandboxedNodeContainer.
 
-        All node descriptions defined will be launched inside the sandbox
-        defined by the policy.
+        All node descriptions defined will be launched inside the sandbox defined by the policy.
         """
         if self.__node_descriptions is None:
             return None

@@ -17,8 +17,13 @@
 
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 from launch_ros_sandbox.descriptions.docker_policy import DockerPolicy
+from launch_ros_sandbox.descriptions.user import User
+from launch_ros_sandbox.descriptions.user_policy import UserPolicy
+
 
 __all__ = [
     'SandboxedNode',
     'DockerPolicy',
+    'User',
+    'UserPolicy',
 ]

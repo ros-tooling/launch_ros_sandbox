@@ -20,9 +20,11 @@ from typing import Optional
 
 import docker
 from docker.errors import ImageNotFound
+
 import launch
 from launch import LaunchContext
 from launch.utilities import perform_substitutions
+
 from launch_ros.substitutions import ExecutableInPackage
 
 from launch_ros_sandbox.descriptions import SandboxedNode
@@ -32,8 +34,7 @@ DEFAULT_DOCKER_TAG = 'dashing-desktop'
 
 
 class DockerPolicy:
-    """DockerPolicy defines parameters for running a sandboxed node in a Docker
-    container."""
+    """DockerPolicy defines parameters for running a sandboxed node in a Docker container."""
 
     def __init__(
         self,
@@ -51,7 +52,7 @@ class DockerPolicy:
             self._repository = DEFAULT_DOCKER_REPO if repository is None else repository
             self._tag = DEFAULT_DOCKER_TAG if tag is None else tag
         # Format image name
-        self._image_name = "{}:{}".format(self._repository, self._tag)
+        self._image_name = '{}:{}'.format(self._repository, self._tag)
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(
             base_url='unix://var/run/docker.sock')
@@ -61,11 +62,11 @@ class DockerPolicy:
         self._load_docker_container()
 
     def _load_docker_container(self):
-        """Utility function to pull an image and then run the container."""
+        """Pull an image and then run the container."""
         try:
             # Pull the image first. Will update if already pulled.
             self.__logger.debug('Pulling image...')
-            image = self._docker_client.images.pull(
+            self._docker_client.images.pull(
                 repository=self._repository,
                 tag=self._tag
             )
@@ -80,10 +81,9 @@ class DockerPolicy:
             )
         except ImageNotFound:
             available_images = self._low_docker_client.images()
-            self.__logger.exception(
-                "Could not find the Docker image with name: {}.\nThe only "
-                "images available are:\n{}".format(self._image_name,
-                                                   '\n'.join(available_images)))
+            self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
+                                    'images available are:\n{}'
+                                    .format(self._image_name, '\n'.join(available_images)))
 
     @property
     def docker_client(self):
@@ -104,7 +104,7 @@ class DockerPolicy:
         TODO: Create a Launch agent in the docker container that can perform the
               substitutions correctly.
         """
-        self.__logger.info("Executing nodes in Docker container...")
+        self.__logger.info('Executing nodes in Docker container...')
         for description in node_descriptions:
             package_name = perform_substitutions(
                 context,
@@ -118,8 +118,8 @@ class DockerPolicy:
                 package=package_name,
                 executable=executable_name
             ).perform(context)
-            exit_code, output = self._container.exec_run(
-                cmd=cmd
-            )
-            self.__logger.debug("Executed command: {}\nStatus code: {}\nOutput:"
-                                " {}".format(cmd, exit_code, output))
+
+            if self._container is not None:
+                exit_code, output = self._container.exec_run(cmd=cmd)
+                self.__logger.debug('Executed command: {}\nStatus code: {}\nOutput: {}'
+                                    .format(cmd, exit_code, output))
