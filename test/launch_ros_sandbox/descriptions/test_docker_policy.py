@@ -19,7 +19,10 @@ DockerPolicy handles default constructor parameters by setting the image name to
 'osrf/ros:dashing-desktop' if both 'repository' and 'tag' are set to the default (None). If only
 'tag' is set to its default value, DockerPolicy will assume the tag 'latest'.
 
-The unit tests verify that tag and repository properly default.
+The unit tests verify that tag and repository properly default. No actual processing occurs inside
+DockerPolicy's constructor, so there is no side effects on calling the constructors within these
+tests. These tests also do not require the Docker daemon since DockerPolicy does not interact
+with Docker until the policy is applied to the SandboxedNodeContainer.
 """
 
 import unittest
@@ -38,10 +41,33 @@ class TestDockerPolicy(unittest.TestCase):
         """
         docker_policy = DockerPolicy()
 
-        assert docker_policy._image_name == 'osrf/ros:dashing-desktop'
+        assert docker_policy.image_name == 'osrf/ros:dashing-desktop'
+        assert docker_policy.repository == 'osrf/ros'
+        assert docker_policy.tag == 'dashing-desktop'
 
-    def test_tag_defaults_to_latest(self) -> None:
+    def test_tag_defaults_to_latest_if_repository_is_defined(self) -> None:
         """Verify DockerPolicy tag defaults to 'latest' when only repository is specified."""
         docker_policy = DockerPolicy(repository='ubuntu')
 
-        assert docker_policy._image_name == 'ubuntu:latest'
+        assert docker_policy.image_name == 'ubuntu:latest'
+        assert docker_policy.repository == 'ubuntu'
+        assert docker_policy.tag == 'latest'
+
+    def test_repository_defaults_to_osrf_if_tag_is_defined(self) -> None:
+        """Verify DockerPolicy repository defaults to 'osrf/ros' if tag is defined."""
+        docker_policy = DockerPolicy(tag='crystal-desktop')
+
+        assert docker_policy.image_name == 'osrf/ros:crystal-desktop'
+        assert docker_policy.repository == 'osrf/ros'
+        assert docker_policy.tag == 'crystal-desktop'
+
+    def test_image_name_properly_set_if_tag_and_repository_are_defined(self) -> None:
+        """Verify DockerPolicy image_name is 'repository:tag' if both are defined."""
+        docker_policy = DockerPolicy(
+            repository='ubuntu',
+            tag='bionic'
+        )
+
+        assert docker_policy.image_name == 'ubuntu:bionic'
+        assert docker_policy.repository == 'ubuntu'
+        assert docker_policy.tag == 'bionic'

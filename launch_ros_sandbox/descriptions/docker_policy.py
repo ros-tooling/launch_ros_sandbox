@@ -107,17 +107,15 @@ class DockerPolicy:
             self._tag = _DEFAULT_DOCKER_TAG
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
+        self._container = None
 
+    def _load_docker_container(self) -> None:
+        """Pull an image and then run the container."""
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(
             base_url='unix://var/run/docker.sock')
         self._docker_client = docker.from_env()
         self._execution_list = []
-        self._container = None
-        self._load_docker_container()
-
-    def _load_docker_container(self) -> None:
-        """Pull an image and then run the container."""
         try:
             # Pull the image first. Will update if already pulled.
             self.__logger.debug('Pulling image {}'.format(self._image_name))
@@ -145,6 +143,25 @@ class DockerPolicy:
         """Return the Docker client."""
         return self._docker_client
 
+    @property
+    def repository(self) -> str:
+        """Return the Docker image repository."""
+        return self._repository
+
+    @property
+    def tag(self) -> str:
+        """Return the Docker image tag."""
+        return self._tag
+
+    @property
+    def image_name(self) -> str:
+        """
+        Return the Docker image name.
+        
+        The image name is defined as 'repository:tag'.
+        """
+        return '{}:{}'.format(self.repository, self.tag)
+
     def apply(
         self,
         context: LaunchContext,
@@ -159,6 +176,9 @@ class DockerPolicy:
         TODO: Create a Launch agent in the docker container that can perform the
               substitutions correctly.
         """
+        if self._container is None:
+            self._load_docker_container()
+
         self.__logger.info('Executing nodes in Docker container...')
         for description in node_descriptions:
             package_name = perform_substitutions(
