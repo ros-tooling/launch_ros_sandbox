@@ -12,7 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Module for the DockerPolicy description."""
+"""
+Module for the DockerPolicy description.
+
+Using DockerPolicy, users can load one or more nodes into a particular Docker container. Using
+DockerPolicy requires that Docker 18+ and docker-py 4.0+ is installed.
+
+Example:
+    ld = launch.LaunchDescription()
+
+    ld.add_action(
+        launch_ros_sandbox.actions.SandboxedNodeContainer(
+            sandbox_name='my_sandbox',
+            policy=launch_ros_sandbox.descriptions.DockerPolicy(),
+            node_descriptions=[
+                launch_ros_sandbox.descriptions.SandboxedNode(
+                    package='demo_nodes_cpp',
+                    node_executable='talker',
+                ),
+                launch_ros_sandbox.descriptions.SandboxedNode(
+                    package='demo_nodes_cpp',
+                    node_executable='listener'
+                )
+            ]
+        )
+    )
+
+This will launch the talker and listener nodes within a Docker container running
+'osrf/ros:dashing-desktop' image.
+
+Currently persistence is not supported, however it is planned to support forwarding all run
+parameters to docker-py.
+"""
 
 import time
 from typing import List
@@ -29,8 +60,8 @@ from launch_ros.substitutions import ExecutableInPackage
 
 from launch_ros_sandbox.descriptions import SandboxedNode
 
-DEFAULT_DOCKER_REPO = 'osrf/ros'
-DEFAULT_DOCKER_TAG = 'dashing-desktop'
+_DEFAULT_DOCKER_REPO = 'osrf/ros'
+_DEFAULT_DOCKER_TAG = 'dashing-desktop'
 
 
 class DockerPolicy:
@@ -58,15 +89,14 @@ class DockerPolicy:
         evaluates to 'osrf/ros'; this includes if 'repository' defaults to 'osrf/ros'. Otherwise
         'tag' defaults to 'latest'.
         """
-        # Set the logger
         self.__logger = launch.logging.get_logger(__name__)
         # Default to latest if only a repository is provided
         if repository is not None and tag is None:
             self._tag = 'latest'
         else:
-            self._repository = DEFAULT_DOCKER_REPO if repository is None else repository
-            self._tag = DEFAULT_DOCKER_TAG if tag is None else tag
-        # Format image name
+            self._repository = _DEFAULT_DOCKER_REPO if repository is None else repository
+            self._tag = _DEFAULT_DOCKER_TAG if tag is None else tag
+
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(
