@@ -90,14 +90,24 @@ class DockerPolicy:
         'tag' defaults to 'latest'.
         """
         self.__logger = launch.logging.get_logger(__name__)
-        # Default to latest if only a repository is provided
-        if repository is not None and tag is None:
-            self._tag = 'latest'
+
+        # calculate the actual tag and repository based on if either are set.
+        if repository is not None:
+            if tag is not None:
+                self._repository = repository
+                self._tag = tag
+            else:
+                self._repository = repository
+                self._tag = 'latest'
+        elif tag is not None:
+            self._repository = _DEFAULT_DOCKER_REPO
+            self._tag = tag
         else:
-            self._repository = _DEFAULT_DOCKER_REPO if repository is None else repository
-            self._tag = _DEFAULT_DOCKER_TAG if tag is None else tag
+            self._repository = _DEFAULT_DOCKER_REPO
+            self._tag = _DEFAULT_DOCKER_TAG
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
+
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(
             base_url='unix://var/run/docker.sock')
@@ -110,7 +120,7 @@ class DockerPolicy:
         """Pull an image and then run the container."""
         try:
             # Pull the image first. Will update if already pulled.
-            self.__logger.debug('Pulling image...')
+            self.__logger.debug('Pulling image {}'.format(self._image_name))
             self._docker_client.images.pull(
                 repository=self._repository,
                 tag=self._tag
