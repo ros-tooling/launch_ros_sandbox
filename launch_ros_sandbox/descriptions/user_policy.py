@@ -71,7 +71,7 @@ class UserPolicy:
         self.__logger.debug('\tgid: {}'.format(user.gid))
         self.__logger.debug('\thome: {}'.format(pw_record.pw_dir))
 
-        def set_user():
+        def set_user() -> None:
             """Set the current user."""
             os.setgid(user.gid)
             os.setuid(user.uid)

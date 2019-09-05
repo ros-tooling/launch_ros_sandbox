@@ -30,7 +30,7 @@ import launch
 import launch_ros_sandbox
 
 
-def generate_launch_description():
+def generate_launch_description() -> launch.LaunchDescription:
     """
     Create launch description for starting SandboxedNodeContainer.
 

@@ -32,7 +32,7 @@ from launch_ros_sandbox.descriptions import User
 from launch_ros_sandbox.descriptions import UserPolicy
 
 
-def generate_launch_description():
+def generate_launch_description() -> launch.LaunchDescription:
     """
     Create launch description for starting SandboxedNodeContainer.
 

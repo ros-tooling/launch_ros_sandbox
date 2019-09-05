@@ -61,7 +61,7 @@ class DockerPolicy:
         self._container = None
         self._load_docker_container()
 
-    def _load_docker_container(self):
+    def _load_docker_container(self) -> None:
         """Pull an image and then run the container."""
         try:
             # Pull the image first. Will update if already pulled.
@@ -86,7 +86,7 @@ class DockerPolicy:
                                     .format(self._image_name, '\n'.join(available_images)))
 
     @property
-    def docker_client(self):
+    def docker_client(self) -> docker.DockerClient:
         """Return an instance of the Docker client."""
         return self._docker_client
 

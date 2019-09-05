@@ -32,7 +32,7 @@ import sys
 from launch_ros_sandbox.descriptions import User
 
 
-def run_as_user(user: User):
+def run_as_user(user: User) -> None:
     """Parse User object and run 'whoami' as that user."""
     pw_record = pwd.getpwuid(user.uid)
 
