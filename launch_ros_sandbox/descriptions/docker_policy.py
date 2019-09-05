@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Module for DockerPolicy."""
+"""Module for the DockerPolicy description."""
 
 import time
 from typing import List
@@ -34,7 +34,12 @@ DEFAULT_DOCKER_TAG = 'dashing-desktop'
 
 
 class DockerPolicy:
-    """DockerPolicy defines parameters for running a sandboxed node in a Docker container."""
+    """
+    DockerPolicy defines parameters for running a sandboxed node in a Docker container.
+
+    All of the parameters passed into DockerPolicy are immutable and only processed once the
+    SandboxedNodeContainer is executed.
+    """
 
     def __init__(
         self,
@@ -42,7 +47,17 @@ class DockerPolicy:
         repository: Optional[str] = None,
         tag: Optional[str] = None,
     ) -> None:
-        """Construct the DockerPolicy."""
+        """
+        Construct the DockerPolicy.
+
+        All of the parameters are preserved if they were set.
+
+        :param: repository is the Docker repository to pull the image from. 'repository' defaults to
+        'osrf/ros'.
+        :param: tag is the Docker image tag. 'tag' defaults to 'dashing-desktop' if 'repository'
+        evaluates to 'osrf/ros'; this includes if 'repository' defaults to 'osrf/ros'. Otherwise
+        'tag' defaults to 'latest'.
+        """
         # Set the logger
         self.__logger = launch.logging.get_logger(__name__)
         # Default to latest if only a repository is provided
@@ -87,7 +102,7 @@ class DockerPolicy:
 
     @property
     def docker_client(self) -> docker.DockerClient:
-        """Return an instance of the Docker client."""
+        """Return the Docker client."""
         return self._docker_client
 
     def apply(
