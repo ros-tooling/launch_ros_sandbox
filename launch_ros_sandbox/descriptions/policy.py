@@ -21,6 +21,8 @@ SandboxedNodeContainer. The `apply` method must be implemented by any security p
 Policy.
 """
 
+from abc import ABC
+from abc import abstractmethod
 from typing import List
 
 from launch import LaunchContext
@@ -28,9 +30,10 @@ from launch import LaunchContext
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 
 
-class Policy:
+class Policy(ABC):
     """Policy is the base class used by any sandboxing Policy description."""
 
+    @abstractmethod
     def apply(
         self,
         context: LaunchContext,

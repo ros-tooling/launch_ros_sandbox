@@ -31,7 +31,7 @@ from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 from launch_ros_sandbox.descriptions.user import User
 
 
-class UserPolicy(Policy):
+class UserPolicy:
     """UserPolicy defines parameters for running a sandboxed node as a different user."""
 
     def __init__(
@@ -105,3 +105,6 @@ class UserPolicy(Policy):
             )
 
             # TODO: handle events for process
+
+
+Policy.register(UserPolicy)

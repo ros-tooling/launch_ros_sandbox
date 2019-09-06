@@ -70,7 +70,7 @@ def _generate_container_name() -> str:
     return 'ros2launch-sandboxed-node-{}'.format(time.strftime('%H%M%S'))
 
 
-class DockerPolicy(Policy):
+class DockerPolicy:
     """
     DockerPolicy defines parameters for running a sandboxed node in a Docker container.
 
@@ -209,3 +209,6 @@ class DockerPolicy(Policy):
                 exit_code, output = self._container.exec_run(cmd=cmd)
                 self.__logger.debug('Executed command: {}\nStatus code: {}\nOutput: {}'
                                     .format(cmd, exit_code, output))
+
+
+Policy.register(DockerPolicy)
