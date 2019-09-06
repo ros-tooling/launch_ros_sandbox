@@ -74,8 +74,8 @@ class DockerPolicy:
     """
     DockerPolicy defines parameters for running a sandboxed node in a Docker container.
 
-    All of the parameters passed into DockerPolicy are immutable and only processed once the
-    SandboxedNodeContainer is executed.
+    DockerPolicy extends Policy. All of the parameters passed into DockerPolicy are immutable and
+    only processed once the SandboxedNodeContainer is executed.
     """
 
     def __init__(

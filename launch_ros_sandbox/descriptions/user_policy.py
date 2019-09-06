@@ -32,7 +32,12 @@ from launch_ros_sandbox.descriptions.user import User
 
 
 class UserPolicy:
-    """UserPolicy defines parameters for running a sandboxed node as a different user."""
+    """
+    UserPolicy defines parameters for running a sandboxed node as a different user.
+
+    UserPolicy extends Policy. All parameters passed into UserPolicy are immutable and are only
+    processed once the SandboxedNodeContainer is executed.
+    """
 
     def __init__(
         self,
