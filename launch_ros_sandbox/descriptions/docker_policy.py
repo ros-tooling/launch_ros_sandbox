@@ -58,7 +58,8 @@ from launch.utilities import perform_substitutions
 
 from launch_ros.substitutions import ExecutableInPackage
 
-from launch_ros_sandbox.descriptions import SandboxedNode
+from launch_ros_sandbox.descriptions.policy import Policy
+from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 
 _DEFAULT_DOCKER_REPO = 'osrf/ros'
 _DEFAULT_DOCKER_TAG = 'dashing-desktop'
@@ -69,7 +70,7 @@ def _generate_container_name() -> str:
     return 'ros2launch-sandboxed-node-{}'.format(time.strftime('%H%M%S'))
 
 
-class DockerPolicy:
+class DockerPolicy(Policy):
     """
     DockerPolicy defines parameters for running a sandboxed node in a Docker container.
 

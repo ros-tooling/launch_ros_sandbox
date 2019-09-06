@@ -26,11 +26,12 @@ from launch.utilities import perform_substitutions
 
 from launch_ros.substitutions import ExecutableInPackage
 
-from launch_ros_sandbox.descriptions import SandboxedNode
-from launch_ros_sandbox.descriptions import User
+from launch_ros_sandbox.descriptions.policy import Policy
+from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
+from launch_ros_sandbox.descriptions.user import User
 
 
-class UserPolicy:
+class UserPolicy(Policy):
     """UserPolicy defines parameters for running a sandboxed node as a different user."""
 
     def __init__(

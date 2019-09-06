@@ -24,6 +24,7 @@ from launch.some_substitutions_type import SomeSubstitutionsType
 from launch.substitution import Substitution
 from launch.utilities import normalize_to_list_of_substitutions
 
+from launch_ros_sandbox.descriptions import Policy
 from launch_ros_sandbox.descriptions import SandboxedNode
 
 
@@ -34,7 +35,7 @@ class SandboxedNodeContainer(Action):
         self,
         *,
         sandbox_name: Optional[SomeSubstitutionsType] = None,
-        policy=None,
+        policy: Optional[Policy] = None,
         node_descriptions: Optional[List[SandboxedNode]] = None,
         **kwargs
     ) -> None:
