@@ -157,7 +157,7 @@ class DockerPolicy:
     def image_name(self) -> str:
         """
         Return the Docker image name.
-        
+
         The image name is defined as 'repository:tag'.
         """
         return '{}:{}'.format(self.repository, self.tag)

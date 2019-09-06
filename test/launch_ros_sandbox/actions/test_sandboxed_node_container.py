@@ -15,12 +15,15 @@
 """Tests for the SandboxedNodeContainer action."""
 
 import unittest
+import unittest.mock
 
 from launch import LaunchDescription
 from launch import LaunchService
 
 from launch_ros_sandbox.actions import SandboxedNodeContainer
+from launch_ros_sandbox.descriptions import DockerPolicy
 from launch_ros_sandbox.descriptions import SandboxedNode
+
 
 
 class TestSandboxedNodeContainer(unittest.TestCase):
@@ -60,3 +63,24 @@ class TestSandboxedNodeContainer(unittest.TestCase):
             sandbox_name='my_sandbox',
         )
         self._assert_launch_no_errors([node_action])
+
+    @unittest.mock.patch('launch_ros_sandbox.descriptions.DockerPolicy')
+    def test_launch_docker_policy(self, mock_docker_policy) -> None:
+        """Test launching SandboxedNodeContainer with DockerPolicy."""
+        node_action = SandboxedNodeContainer(
+            sandbox_name='my_sandbox',
+            policy=mock_docker_policy,
+            node_descriptions=[
+                SandboxedNode(
+                    package='demo_nodes_cpp',
+                    node_executable='talker',
+                ),
+                SandboxedNode(
+                    package='demo_nodes_cpp',
+                    node_executable='listener'
+                ),
+            ],
+        )
+
+        self._assert_launch_no_errors([node_action])
+        mock_docker_policy.apply.assert_called()
