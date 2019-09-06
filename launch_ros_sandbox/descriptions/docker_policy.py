@@ -64,6 +64,11 @@ _DEFAULT_DOCKER_REPO = 'osrf/ros'
 _DEFAULT_DOCKER_TAG = 'dashing-desktop'
 
 
+def _generate_container_name() -> str:
+    """Generate a Docker container name for use in DockerPolicy."""
+    return 'ros2launch-sandboxed-node-{}'.format(time.strftime('%H%M%S'))
+
+
 class DockerPolicy:
     """
     DockerPolicy defines parameters for running a sandboxed node in a Docker container.
@@ -108,14 +113,15 @@ class DockerPolicy:
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container = None
+        self._container_name = ''
 
     def _load_docker_container(self) -> None:
         """Pull an image and then run the container."""
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
-        self._low_docker_client = docker.APIClient(
-            base_url='unix://var/run/docker.sock')
+        self._low_docker_client = docker.APIClient(base_url='unix://var/run/docker.sock')
         self._docker_client = docker.from_env()
-        self._execution_list = []
+        self._container_name = _generate_container_name()
+
         try:
             # Pull the image first. Will update if already pulled.
             self.__logger.debug('Pulling image {}'.format(self._image_name))
@@ -129,14 +135,18 @@ class DockerPolicy:
                 image=self._image_name,
                 detach=True,
                 auto_remove=True,
-                name='ros2launch-sandboxed-node-{}'.format(
-                    time.strftime('%H%M%S'))
+                name=self.container_name
             )
         except ImageNotFound:
             available_images = self._low_docker_client.images()
             self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
                                     'images available are:\n{}'
                                     .format(self._image_name, '\n'.join(available_images)))
+
+    @property
+    def container_name(self) -> str:
+        """Return the Docker container name."""
+        return self._container_name
 
     @property
     def docker_client(self) -> docker.DockerClient:
