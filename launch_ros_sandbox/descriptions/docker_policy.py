@@ -56,25 +56,18 @@ import launch
 from launch import LaunchContext
 from launch.utilities import perform_substitutions
 
-from launch_ros.substitutions import ExecutableInPackage
-
 from launch_ros_sandbox.descriptions.policy import Policy
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 
 _DEFAULT_DOCKER_REPO = 'osrf/ros'
 _DEFAULT_DOCKER_TAG = 'dashing-desktop'
-
-# Use bash inside the Docker container to run the command
-_ROS_CMD_SHELL = '/bin/bash -c'
-# Source the environment script; must be ran with bash before running any ROS 2 node inside Docker.
-_ROS_CMD_ENV = 'source /ros_entrypoint.sh'
+_DEFAULT_EXEC_ENTRYPOINT = '/ros_entrypoint.sh'
 
 
-def _containerized_cmd(cmd: str) -> str:
-    """Add the proper shell and environment to the command before passing to Docker."""
-    # Prefix the command with sourcing the environment and run both within the correct shell.
-    # Use '&&' to shortcircuit the node execution command if sourcing the environment fails.
-    return '{} \"{} && {}\"'.format(_ROS_CMD_SHELL, _ROS_CMD_ENV, cmd)
+def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[str]:
+    """Prepare the command for executing within the Docker container."""
+    # Use ros2 CLI command to find the executable
+    return [entrypoint, 'ros2', 'run', package, executable]
 
 
 def _generate_container_name() -> str:
@@ -95,6 +88,7 @@ class DockerPolicy:
         *,
         repository: Optional[str] = None,
         tag: Optional[str] = None,
+        entrypoint: Optional[str] = None,
     ) -> None:
         """
         Construct the DockerPolicy.
@@ -106,6 +100,9 @@ class DockerPolicy:
         :param: tag is the Docker image tag. 'tag' defaults to 'dashing-desktop' if 'repository'
         evaluates to 'osrf/ros'; this includes if 'repository' defaults to 'osrf/ros'. Otherwise
         'tag' defaults to 'latest'.
+        :param: entrypoint is the absolute path of the script to run within the Docker container for
+        launching internal ROS 2 nodes. Defaults to '/ros_entrypoint.sh' if repository evaluates to
+        'osrf/ros'. Otherwise 'entrypoint' defaults to '/bin/bash -c'.
         """
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -123,6 +120,13 @@ class DockerPolicy:
         else:
             self._repository = _DEFAULT_DOCKER_REPO
             self._tag = _DEFAULT_DOCKER_TAG
+        
+        if entrypoint is not None:
+            self._entrypoint = entrypoint
+        elif self._repository == _DEFAULT_DOCKER_REPO:
+            self._entrypoint = _DEFAULT_EXEC_ENTRYPOINT
+        else:
+            self._entrypoint = '/bin/bash -c'
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container = None
@@ -210,17 +214,18 @@ class DockerPolicy:
                 context,
                 description.package
             )
+
             executable_name = perform_substitutions(
                 context,
                 description.node_executable
             )
-            cmd = ExecutableInPackage(
-                package=package_name,
-                executable=executable_name
-            ).perform(context)
 
             if self._container is not None:
-                cmd = _containerized_cmd(cmd)
+                cmd = _containerized_cmd(
+                    entrypoint=self._entrypoint,
+                    package=package_name,
+                    executable=executable_name
+                )
 
                 exit_code, output = self._container.exec_run(
                     cmd=cmd,
@@ -232,7 +237,9 @@ class DockerPolicy:
                 self.__logger.debug('Exit Code: {}'.format(exit_code))
                 self.__logger.debug('Output: type={} value={}'.format(type(output), output))
             else:
-                self.__logger.error('No container!')
+                self.__logger.error('Could not run cmd: \"package={}, executable={}\" due to there'
+                                    ' being no active container!'
+                                    .format(package_name, executable_name))
 
 
 Policy.register(DockerPolicy)
