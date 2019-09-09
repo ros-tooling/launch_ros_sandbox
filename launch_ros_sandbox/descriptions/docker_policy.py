@@ -64,6 +64,18 @@ from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 _DEFAULT_DOCKER_REPO = 'osrf/ros'
 _DEFAULT_DOCKER_TAG = 'dashing-desktop'
 
+# Use bash inside the Docker container to run the command
+_ROS_CMD_SHELL = '/bin/bash -c'
+# Source the environment script; must be ran with bash before running any ROS 2 node inside Docker.
+_ROS_CMD_ENV = 'source /ros_entrypoint.sh'
+
+
+def _containerized_cmd(cmd: str) -> str:
+    """Add the proper shell and environment to the command before passing to Docker."""
+    # Prefix the command with sourcing the environment and run both within the correct shell.
+    # Use '&&' to shortcircuit the node execution command if sourcing the environment fails.
+    return '{} \"{} && {}\"'.format(_ROS_CMD_SHELL, _ROS_CMD_ENV, cmd)
+
 
 def _generate_container_name() -> str:
     """Generate a Docker container name for use in DockerPolicy."""
@@ -130,14 +142,17 @@ class DockerPolicy:
                 repository=self._repository,
                 tag=self._tag
             )
-            self.__logger.debug('Image Pulled')
+
             # Run the container and keep track of its ID.
             self._container = self._docker_client.containers.run(
                 image=self._image_name,
                 detach=True,
                 auto_remove=True,
+                tty=True,
                 name=self.container_name
             )
+
+            self.__logger.info('Running Docker container: \"{}\"'.format(self.container_name))
         except ImageNotFound:
             available_images = self._low_docker_client.images()
             self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
@@ -190,7 +205,6 @@ class DockerPolicy:
         if self._container is None:
             self._load_docker_container()
 
-        self.__logger.info('Executing nodes in Docker container...')
         for description in node_descriptions:
             package_name = perform_substitutions(
                 context,
@@ -206,9 +220,19 @@ class DockerPolicy:
             ).perform(context)
 
             if self._container is not None:
-                exit_code, output = self._container.exec_run(cmd=cmd)
-                self.__logger.debug('Executed command: {}\nStatus code: {}\nOutput: {}'
-                                    .format(cmd, exit_code, output))
+                cmd = _containerized_cmd(cmd)
+
+                exit_code, output = self._container.exec_run(
+                    cmd=cmd,
+                    detach=True,
+                    tty=True
+                )
+
+                self.__logger.debug('Executed command: {}'.format(cmd))
+                self.__logger.debug('Exit Code: {}'.format(exit_code))
+                self.__logger.debug('Output: type={} value={}'.format(type(output), output))
+            else:
+                self.__logger.error('No container!')
 
 
 Policy.register(DockerPolicy)
