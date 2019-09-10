@@ -89,6 +89,7 @@ class DockerPolicy:
         repository: Optional[str] = None,
         tag: Optional[str] = None,
         entrypoint: Optional[str] = None,
+        container_name: Optional[str] = None,
     ) -> None:
         """
         Construct the DockerPolicy.
@@ -103,6 +104,7 @@ class DockerPolicy:
         :param: entrypoint is the absolute path of the script to run within the Docker container for
         launching internal ROS 2 nodes. Defaults to '/ros_entrypoint.sh' if repository evaluates to
         'osrf/ros'. Otherwise 'entrypoint' defaults to '/bin/bash -c'.
+        :param: container_name is the optional name of the container. Defaults to a generated name.
         """
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -128,16 +130,19 @@ class DockerPolicy:
         else:
             self._entrypoint = '/bin/bash -c'
 
+        if container_name is not None:
+            self._container_name = container_name
+        else:
+            self._container_name = _generate_container_name()
+
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container = None
-        self._container_name = ''
 
     def _load_docker_container(self) -> None:
         """Pull an image and then run the container."""
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(base_url='unix://var/run/docker.sock')
         self._docker_client = docker.from_env()
-        self._container_name = _generate_container_name()
 
         try:
             # Pull the image first. Will update if already pulled.
