@@ -15,9 +15,8 @@
 """
 Module for the DockerPolicy description.
 
-Using DockerPolicy, users can load one or more nodes into a particular Docker
-container. Using DockerPolicy requires that Docker 18+ and docker-py 4.0+ is
-installed.
+Using DockerPolicy, users can load one or more nodes into a particular Docker container. Using
+DockerPolicy requires that Docker 18+ and docker-py 4.0+ is installed.
 
 Example:
     ld = launch.LaunchDescription()
@@ -42,8 +41,8 @@ Example:
 This will launch the talker and listener nodes within a Docker container running
 'osrf/ros:dashing-desktop' image.
 
-Currently persistence is not supported, however it is planned to support
-forwarding all run parameters to docker-py.
+Currently persistence is not supported, however it is planned to support forwarding all run
+parameters to docker-py.
 """
 
 import time
@@ -95,9 +94,10 @@ class DockerPolicy:
         """
         Construct the DockerPolicy.
 
-        The constructor only sets the repository, tag, and entrypoint based on the provided
-        parameters. The container is not executed until the policy is applied. The repository and
-        tag parameters are optional and will default to OSRF's latest ROS distribution if not set.
+        The constructor sets the repository, tag, and entrypoint for the Docker container based on
+        the provided parameters. The repository and tag parameters are optional and will default
+        to OSRF's latest ROS distribution if not set. A container name can also be provided, but
+        will default to a generic name. The container is not started until the policy is applied.
 
         :param: repository is the Docker repository to pull the image from. 'repository' defaults
         to 'osrf/ros'.
@@ -107,6 +107,10 @@ class DockerPolicy:
         :param: entrypoint is the absolute path of the script to run within the Docker container
         for launching internal ROS 2 nodes. Defaults to '/ros_entrypoint.sh' if repository
         evaluates to 'osrf/ros'. Otherwise 'entrypoint' defaults to '/bin/bash -c'.
+        :param: container_name is the name of the container passed to Docker to make it easier to
+        identify when listing all the containers. Defaults to
+        ros2launch-sandboxed-node-<Hour><Minute><Sec> where the time is when the DockerPolicy
+        was constructed.
         """
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -141,7 +145,6 @@ class DockerPolicy:
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
         self._low_docker_client = docker.APIClient(base_url='unix://var/run/docker.sock')
         self._docker_client = docker.from_env()
-        self._container_name = _generate_container_name()
 
         try:
             # Pull the image first. Will update if already pulled.
@@ -157,15 +160,15 @@ class DockerPolicy:
                 detach=True,
                 auto_remove=True,
                 tty=True,
-                name=self.container_name
+                name=self._container_name
             )
 
-            self.__logger.info('Running Docker container: \"{}\"'.format(self.container_name))
+            self.__logger.info('Running Docker container: \"{}\"'.format(self._container_name))
         except ImageNotFound:
             available_images = self._low_docker_client.images()
             self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
-                                    'images available are:\n{}'.format(self._image_name, '\n'.join(
-                                        available_images)))
+                                    'images available are:\n{}'
+                                    .format(self._image_name, '\n'.join(available_images)))
 
     @property
     def container_name(self) -> str:
@@ -242,8 +245,8 @@ class DockerPolicy:
                 self.__logger.debug('Output: type={} value={}'.format(type(output), output))
             else:
                 self.__logger.error('Could not run cmd: \"package={}, executable={}\" due to there '
-                                    'being no active container!'.format(package_name,
-                                                                        executable_name))
+                                    'being no active container!'
+                                    .format(package_name, executable_name))
 
 
 Policy.register(DockerPolicy)

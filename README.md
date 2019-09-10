@@ -20,7 +20,7 @@ $ python3 setup.py install --user
 
 ## Usage
 
-A working example is provided in `examples/minimal_sandboxed_node_container.py`.
+A working example is provided in [`examples/minimal_sandboxed_node_container.py`](examples/minimal_sandboxed_node_container.py).
 
 ``` bash
 $ ./examples/minimal_sandboxed_node_container.py
