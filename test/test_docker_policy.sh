@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./examples/minimal_sandbox_docker.py
+./examples/minimal_sandbox_docker.launch.py
 docker ps
 
 echo "Executing listener in Docker container..."
