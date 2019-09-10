@@ -14,16 +14,13 @@
 
 """Tests for the SandboxedNodeContainer action."""
 
-import unittest
 import unittest.mock
 
 from launch import LaunchDescription
 from launch import LaunchService
 
 from launch_ros_sandbox.actions import SandboxedNodeContainer
-from launch_ros_sandbox.descriptions import DockerPolicy
 from launch_ros_sandbox.descriptions import SandboxedNode
-
 
 
 class TestSandboxedNodeContainer(unittest.TestCase):

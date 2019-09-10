@@ -99,11 +99,11 @@ class DockerPolicy:
         parameters. The container is not executed until the policy is applied. The repository and
         tag parameters are optional and will default to OSRF's latest ROS distribution if not set.
 
-        :param: repository is the Docker repository to pull the image from. 'repository' defaults to
-         'osrf/ros'.
+        :param: repository is the Docker repository to pull the image from. 'repository' defaults
+        to 'osrf/ros'.
         :param: tag is the Docker image tag. 'tag' defaults to 'dashing-desktop' if 'repository'
-        evaluates to 'osrf/ros'; this includes if 'repository' defaults to 'osrf/ros'.
-        Otherwise'tag' defaults to 'latest'.
+        evaluates to 'osrf/ros'; this includes if 'repository' defaults to 'osrf/ros'. Otherwise
+        'tag' defaults to 'latest'.
         :param: entrypoint is the absolute path of the script to run within the Docker container
         for launching internal ROS 2 nodes. Defaults to '/ros_entrypoint.sh' if repository
         evaluates to 'osrf/ros'. Otherwise 'entrypoint' defaults to '/bin/bash -c'.
@@ -134,7 +134,7 @@ class DockerPolicy:
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container = None
-        self._container_name = ''
+        self._container_name = container_name or _generate_container_name()
 
     def _load_docker_container(self) -> None:
         """Pull an image and then run the container."""
