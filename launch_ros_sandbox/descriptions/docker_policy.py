@@ -78,12 +78,10 @@ def _generate_container_name() -> str:
 
 class DockerPolicy:
     """
-    DockerPolicy defines parameters for running a sandboxed node in a Docker
-    container.
+    DockerPolicy defines parameters for running a sandboxed node in a Docker container.
 
-    DockerPolicy extends Policy. All of the parameters passed into DockerPolicy
-    are immutable and only processed once the SandboxedNodeContainer is
-    executed.
+    DockerPolicy extends Policy. All of the parameters passed into DockerPolicy are immutable and
+    only processed once the SandboxedNodeContainer is executed.
     """
 
     def __init__(
@@ -92,25 +90,23 @@ class DockerPolicy:
             repository: Optional[str] = None,
             tag: Optional[str] = None,
             entrypoint: Optional[str] = None,
+            container_name: Optional[str] = None,
     ) -> None:
         """
         Construct the DockerPolicy.
 
-        The constructor only sets the repository, tag, and entrypoint based
-        on the provided parameters. The container is not executed until the
-        policy is applied. The repository and tag parameters are optional and
-        will default to OSRF's latest ROS distribution if not set.
+        The constructor only sets the repository, tag, and entrypoint based on the provided
+        parameters. The container is not executed until the policy is applied. The repository and
+        tag parameters are optional and will default to OSRF's latest ROS distribution if not set.
 
-        :param: repository is the Docker repository to pull the image from.
-        'repository' defaults to 'osrf/ros'.
-        :param: tag is the Docker image tag. 'tag' defaults to 'dashing-desktop'
-        if 'repository' evaluates to 'osrf/ros'; this includes if
-        'repository' defaults to 'osrf/ros'. Otherwise'tag' defaults to
-        'latest'.
-        :param: entrypoint is the absolute path of the script to run within the
-        Docker container for launching internal ROS 2 nodes. Defaults to
-        '/ros_entrypoint.sh' if repository evaluates to 'osrf/ros'. Otherwise
-        'entrypoint' defaults to '/bin/bash -c'.
+        :param: repository is the Docker repository to pull the image from. 'repository' defaults to
+         'osrf/ros'.
+        :param: tag is the Docker image tag. 'tag' defaults to 'dashing-desktop' if 'repository'
+        evaluates to 'osrf/ros'; this includes if 'repository' defaults to 'osrf/ros'.
+        Otherwise'tag' defaults to 'latest'.
+        :param: entrypoint is the absolute path of the script to run within the Docker container
+        for launching internal ROS 2 nodes. Defaults to '/ros_entrypoint.sh' if repository
+        evaluates to 'osrf/ros'. Otherwise 'entrypoint' defaults to '/bin/bash -c'.
         """
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -143,8 +139,7 @@ class DockerPolicy:
     def _load_docker_container(self) -> None:
         """Pull an image and then run the container."""
         # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
-        self._low_docker_client = docker.APIClient(
-            base_url='unix://var/run/docker.sock')
+        self._low_docker_client = docker.APIClient(base_url='unix://var/run/docker.sock')
         self._docker_client = docker.from_env()
         self._container_name = _generate_container_name()
 
@@ -165,14 +160,12 @@ class DockerPolicy:
                 name=self.container_name
             )
 
-            self.__logger.info(
-                'Running Docker container: \"{}\"'.format(self.container_name))
+            self.__logger.info('Running Docker container: \"{}\"'.format(self.container_name))
         except ImageNotFound:
             available_images = self._low_docker_client.images()
-            self.__logger.exception('Could not find the Docker image with name:'
-                                    ' {}.\nThe only images available are:\n{}'
-                                    .format(self._image_name, '\n'.join(
-                available_images)))
+            self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
+                                    'images available are:\n{}'.format(self._image_name, '\n'.join(
+                                        available_images)))
 
     @property
     def container_name(self) -> str:
@@ -211,11 +204,11 @@ class DockerPolicy:
         """
         Execute each node in the Docker container.
 
-        This function in its current state will assume that the path of the
-        executable on the host the launch file is run on is the same as the path
-        in the Docker container (ex. /opt/ros/dashing/lib).
-        TODO: Create a Launch agent in the docker container that can perform the
-              substitutions correctly.
+        This function in its current state will assume that the path of the executable on the
+        host the launch file is run on is the same as the path in the Docker container (ex.
+        /opt/ros/dashing/lib).
+        TODO: Create a Launch agent in the docker container that can perform the substitutions
+              correctly.
         """
         if self._container is None:
             self._load_docker_container()
@@ -246,13 +239,11 @@ class DockerPolicy:
 
                 self.__logger.debug('Executed command: {}'.format(cmd))
                 self.__logger.debug('Exit Code: {}'.format(exit_code))
-                self.__logger.debug(
-                    'Output: type={} value={}'.format(type(output), output))
+                self.__logger.debug('Output: type={} value={}'.format(type(output), output))
             else:
-                self.__logger.error(
-                    'Could not run cmd: \"package={}, executable={}\" due to '
-                    'there being no active container!'.format(
-                        package_name, executable_name))
+                self.__logger.error('Could not run cmd: \"package={}, executable={}\" due to there '
+                                    'being no active container!'.format(package_name,
+                                                                        executable_name))
 
 
 Policy.register(DockerPolicy)
