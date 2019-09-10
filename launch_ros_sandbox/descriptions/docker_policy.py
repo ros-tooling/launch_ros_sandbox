@@ -122,7 +122,7 @@ class DockerPolicy:
         else:
             self._repository = _DEFAULT_DOCKER_REPO
             self._tag = _DEFAULT_DOCKER_TAG
-        
+
         if entrypoint is not None:
             self._entrypoint = entrypoint
         elif self._repository == _DEFAULT_DOCKER_REPO:
@@ -130,11 +130,7 @@ class DockerPolicy:
         else:
             self._entrypoint = '/bin/bash -c'
 
-        if container_name is not None:
-            self._container_name = container_name
-        else:
-            self._container_name = _generate_container_name()
-
+        self._container_name = container_name or _generate_container_name()
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container = None
 
