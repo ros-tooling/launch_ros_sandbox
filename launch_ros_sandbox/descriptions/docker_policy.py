@@ -43,6 +43,7 @@ This will launch the talker and listener nodes within a Docker container running
 
 Currently persistence is not supported, however it is planned to support forwarding all run
 parameters to docker-py.
+
 """
 
 import time
@@ -84,12 +85,12 @@ class DockerPolicy:
     """
 
     def __init__(
-            self,
-            *,
-            repository: Optional[str] = None,
-            tag: Optional[str] = None,
-            entrypoint: Optional[str] = None,
-            container_name: Optional[str] = None,
+        self,
+        *,
+        repository: Optional[str] = None,
+        tag: Optional[str] = None,
+        entrypoint: Optional[str] = None,
+        container_name: Optional[str] = None,
     ) -> None:
         """
         Construct the DockerPolicy.
@@ -160,10 +161,10 @@ class DockerPolicy:
                 detach=True,
                 auto_remove=True,
                 tty=True,
-                name=self._container_name
+                name=self.container_name
             )
 
-            self.__logger.info('Running Docker container: \"{}\"'.format(self._container_name))
+            self.__logger.info('Running Docker container: \"{}\"'.format(self.container_name))
         except ImageNotFound:
             available_images = self._low_docker_client.images()
             self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
@@ -200,18 +201,16 @@ class DockerPolicy:
         return '{}:{}'.format(self.repository, self.tag)
 
     def apply(
-            self,
-            context: LaunchContext,
-            node_descriptions: List[SandboxedNode]
+        self,
+        context: LaunchContext,
+        node_descriptions: List[SandboxedNode]
     ) -> None:
         """
         Execute each node in the Docker container.
 
-        This function in its current state will assume that the path of the executable on the
-        host the launch file is run on is the same as the path in the Docker container (ex.
-        /opt/ros/dashing/lib).
-        TODO: Create a Launch agent in the docker container that can perform the substitutions
-              correctly.
+        Applying the policy involves iterating over the list of nodes to execute and using the
+        `ros2 run` CLI within the container. The node and package names are resolved using
+        substitutions, a utility from Launch.
         """
         if self._container is None:
             self._load_docker_container()
