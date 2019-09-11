@@ -54,6 +54,7 @@ import docker
 from docker.errors import ImageNotFound
 
 import launch
+from launch import Action
 from launch import LaunchContext
 from launch.utilities import perform_substitutions
 
@@ -202,13 +203,13 @@ class DockerPolicy:
         self,
         context: LaunchContext,
         node_descriptions: List[SandboxedNode]
-    ) -> None:
+    ) -> Action:
         """
-        Execute each node in the Docker container.
+        Apply the policy and load each node inside the Docker sandbox.
 
         Applying the policy involves iterating over the list of nodes to execute and using the
         `ros2 run` CLI within the container. The node and package names are resolved using
-        substitutions, a utility from Launch.
+        substitutions, a utility from Launch.        
         """
         if self._container is None:
             self._load_docker_container()
@@ -244,6 +245,11 @@ class DockerPolicy:
                 self.__logger.error('Could not run cmd: \"package={}, executable={}\" due to there '
                                     'being no active container!'
                                     .format(package_name, executable_name))
+
+        from launch_ros_sandbox.actions.load_docker_nodes import LoadDockerNodes
+
+        # FIXME: Move logic for creating sandbox into LoadDockerNodes.
+        return LoadDockerNodes()
 
 
 Policy.register(DockerPolicy)

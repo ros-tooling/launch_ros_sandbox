@@ -21,6 +21,7 @@ from typing import List
 from typing import Optional
 
 import launch
+from launch import Action
 from launch import LaunchContext
 from launch.utilities import perform_substitutions
 
@@ -63,7 +64,7 @@ class UserPolicy:
         self,
         context: LaunchContext,
         node_descriptions: List[SandboxedNode]
-    ) -> None:
+    ) -> Action:
         """Apply the policy any launches the ROS2 nodes in the sandbox."""
         user = self.run_as
         pw_record = pwd.getpwuid(user.uid)
@@ -110,6 +111,11 @@ class UserPolicy:
             )
 
             # TODO: handle events for process
+
+        from launch_ros_sandbox.actions.load_runas_nodes import LoadRunAsNodes
+
+        # FIXME: LaunchAsUser is currently NO-OP due to all sandboxing logic being handled here.
+        return LoadRunAsNodes()
 
 
 Policy.register(UserPolicy)

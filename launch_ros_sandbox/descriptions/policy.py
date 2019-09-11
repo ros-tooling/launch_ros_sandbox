@@ -25,6 +25,7 @@ from abc import ABC
 from abc import abstractmethod
 from typing import List
 
+from launch import Action
 from launch import LaunchContext
 
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
@@ -38,12 +39,14 @@ class Policy(ABC):
         self,
         context: LaunchContext,
         node_descriptions: List[SandboxedNode]
-    ) -> None:
+    ) -> Action:
         """
-        Execute each node in a sandbox with this policy applied.
+        Apply the sandboxing policy and returns an Action for controlling the environment.
 
         This method is called by `SandboxedNodeContainer.execute` when the SandboxedNodeContainer
-        Action is visited by the LaunchService.
+        Action is visited by the LaunchService. This function returns a single Action which will
+        launch the nodes inside the sandboxed environment. LaunchService monitors the lifecycle of
+        this Action.
 
         :param: context is the LaunchContext. This is forwarded by SandboxedNodeContainer and is
         used to resolve any substitutions.
