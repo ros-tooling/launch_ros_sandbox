@@ -20,7 +20,12 @@ LoadDockerNodes is an Action that controls the lifecycle of a sandboxed environm
 a Docker container. This Action is not exported and should only be used internally.
 """
 
+from asyncio import Future
+from typing import List
+from typing import Optional
+
 from launch import Action
+from launch import LaunchContext
 
 
 class LoadDockerNodes(Action):
@@ -28,7 +33,29 @@ class LoadDockerNodes(Action):
     LoadDockerNodes is an Action that controls the sandbox environment spawned by `DockerPolicy`.
 
     LoadDockerNodes should only be constructed by `DockerPolicy.apply`.
-    FIXME: Move the logic for launching the sandbox environment into `LoadDockerNodes.execute`
+    TODO: Move the logic for launching the sandbox environment into `LoadDockerNodes.execute`
     """
 
-    pass
+    def _start_docker_container(self) -> None:
+        """Start Docker container."""
+        pass
+
+    def _load_nodes_in_docker(self) -> None:
+        """Load all nodes into Docker container."""
+        pass
+
+    def get_asyncio_future(self) -> Optional[Future]:
+        """Return the asyncio Future that represents the lifecycle of the Docker container."""
+        return None
+
+    def execute(
+        self,
+        context: LaunchContext
+    ) -> Optional[List[Action]]:
+        """
+        Execute the ROS 2 sandbox inside Docker.
+
+        This will start the Docker container and run each ROS 2 node from inside that container.
+        There is no additional work required, so this function always returns None.
+        """
+        return None
