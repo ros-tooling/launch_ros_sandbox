@@ -27,6 +27,7 @@ from launch.utilities import perform_substitutions
 
 from launch_ros.substitutions import ExecutableInPackage
 
+from launch_ros_sandbox.actions.load_runas_nodes import LoadRunAsNodes
 from launch_ros_sandbox.descriptions.policy import Policy
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 from launch_ros_sandbox.descriptions.user import User
@@ -112,9 +113,7 @@ class UserPolicy:
 
             # TODO: handle events for process
 
-        from launch_ros_sandbox.actions.load_runas_nodes import LoadRunAsNodes
-
-        # FIXME: LaunchAsUser is currently NO-OP due to all sandboxing logic being handled here.
+        # TODO: LaunchAsUser is currently NO-OP due to all sandboxing logic being handled here.
         return LoadRunAsNodes()
 
 
