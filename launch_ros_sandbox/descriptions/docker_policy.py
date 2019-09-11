@@ -117,8 +117,10 @@ class DockerPolicy:
 
         # Calculate the actual tag and repository based on if either are set.
         if repository is not None:
-            self._repository = repository
-            self._tag = tag or 'latest'
+            if repository == _DEFAULT_DOCKER_REPO:
+                self._tag = tag or _DEFAULT_DOCKER_REPO
+            else:
+                self._tag = tag or 'latest'
         elif tag is not None:
             self._repository = _DEFAULT_DOCKER_REPO
             self._tag = tag
