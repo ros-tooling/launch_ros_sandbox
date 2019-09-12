@@ -14,6 +14,7 @@
 
 """Tests for User."""
 
+import getpass
 import os
 
 import unittest
@@ -27,7 +28,7 @@ class TestUser(unittest.TestCase):
         """Verify User.from_username returns the correct User."""
         uid = os.getuid()
         gid = os.getgid()
-        username = os.getlogin()
+        username = getpass.getuser()
         user = User.from_username(username)
 
         assert uid == user.uid
