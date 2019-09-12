@@ -47,7 +47,6 @@ class LoadDockerNodes(Action):
     LoadDockerNodes is an Action that controls the sandbox environment spawned by `DockerPolicy`.
 
     LoadDockerNodes should only be constructed by `DockerPolicy.apply`.
-    TODO: Move the logic for launching the sandbox environment into `LoadDockerNodes.execute`
     """
 
     def __init__(
@@ -76,6 +75,10 @@ class LoadDockerNodes(Action):
 
         This will download the Docker image if it is not currently cached and will update it if its
         out of date.
+
+        Raises:
+            ImageNotFound if Docker cannot find the remote repo for the image to pull
+
         """
         self.__logger.debug('Pulling image {}'.format(self._policy.image_name))
 
