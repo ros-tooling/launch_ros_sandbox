@@ -16,8 +16,8 @@
 """
 Internal module for the LoadDockerNodes Action.
 
-LoadDockerNodes is an Action that controls the lifecycle of a sandboxed environment running nodes as
-a Docker container. This Action is not exported and should only be used internally.
+LoadDockerNodes is an Action that controls the lifecycle of a sandboxed environment running nodes
+as a Docker container. This Action is not exported and should only be used internally.
 """
 
 from asyncio import Future
@@ -44,8 +44,8 @@ class LoadDockerNodes(Action):
         """
         Construct the LoadDockerNodes Action.
 
-        Parameters regarding initialization are copied here. Most of the arguments are forwarded to
-        Action.
+        Parameters regarding initialization are copied here.
+        Most of the arguments are forwarded to Action.
         """
         super().__init__(**kwargs)
         self._completed_future = None

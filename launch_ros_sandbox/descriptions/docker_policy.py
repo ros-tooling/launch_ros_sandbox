@@ -78,7 +78,7 @@ def _generate_container_name() -> str:
     return 'ros2launch-sandboxed-node-{}'.format(time.strftime('%H%M%S'))
 
 
-class DockerPolicy:
+class DockerPolicy(Policy):
     """
     DockerPolicy defines parameters for running a sandboxed node in a Docker container.
 
@@ -241,9 +241,9 @@ class DockerPolicy:
                 self.__logger.debug('Exit Code: {}'.format(exit_code))
                 self.__logger.debug('Output: type={} value={}'.format(type(output), output))
             else:
-                self.__logger.error('Could not run cmd: \"package={}, executable={}\" due to there '
-                                    'being no active container!'
-                                    .format(package_name, executable_name))
+                self.__logger.error(
+                    'Could not run cmd: \"package={}, executable={}\" due to there '
+                    'being no active container!'.format(package_name, executable_name))
 
         # TODO: Move logic for creating sandbox into LoadDockerNodes.
         return LoadDockerNodes()

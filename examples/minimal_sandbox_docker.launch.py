@@ -52,10 +52,11 @@ def generate_launch_description() -> LaunchDescription:
     """
     Create launch description for starting SandboxedNodeContainer with DockerPolicy.
 
-    Talker is loaded inside the SandboxedNodeContainer. When the sandboxed node is executed, it runs
-    the ROS 2 node within the Docker container. The container continues to run until stopped
-    externally. The talker node can be interacted with by launching a listener node. The listener
-    node does not need to be launched from within the Docker container.
+    Talker is loaded inside the SandboxedNodeContainer.
+    When the sandboxed node is executed, it runs the ROS 2 node within the Docker container.
+    The container continues to run until stopped externally.
+    The talker node can be interacted with by launching a listener node.
+    The listener node does not need to be launched from within the Docker container.
     """
     ld = LaunchDescription()
 

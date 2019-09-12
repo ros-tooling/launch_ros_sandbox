@@ -33,7 +33,7 @@ from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 from launch_ros_sandbox.descriptions.user import User
 
 
-class UserPolicy:
+class UserPolicy(Policy):
     """
     UserPolicy defines parameters for running a sandboxed node as a different user.
 
