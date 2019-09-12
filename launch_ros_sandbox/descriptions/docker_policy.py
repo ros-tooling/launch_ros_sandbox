@@ -62,12 +62,6 @@ _DEFAULT_DOCKER_TAG = 'dashing-desktop'
 _DEFAULT_EXEC_ENTRYPOINT = '/ros_entrypoint.sh'
 
 
-def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[str]:
-    """Prepare the command for executing within the Docker container."""
-    # Use ros2 CLI command to find the executable
-    return [entrypoint, 'ros2', 'run', package, executable]
-
-
 def _generate_container_name() -> str:
     """Generate a Docker container name for use in DockerPolicy."""
     return 'ros2launch-sandboxed-node-{}'.format(time.strftime('%H%M%S'))
@@ -176,6 +170,3 @@ class DockerPolicy(Policy):
             policy=self,
             node_descriptions=node_descriptions
         )
-
-
-Policy.register(DockerPolicy)
