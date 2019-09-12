@@ -20,17 +20,19 @@ LoadDockerNodes is an Action that controls the lifecycle of a sandboxed environm
 as a Docker container. This Action is not exported and should only be used internally.
 """
 
-from asyncio import Future
-from typing import List
-from typing import Optional
+from asyncio import CancelledError, Future
+
+from threading import Lock
+from typing import List, Optional
 
 import docker
 
 import launch
-from launch import Action
-from launch import LaunchContext
-from launch.utilities import create_future
-from launch.utilities import perform_substitutions
+from launch import Action, LaunchContext
+from launch.event import Event
+from launch.event_handlers import OnShutdown
+from launch.some_actions_type import SomeActionsType
+from launch.utilities import create_future, perform_substitutions
 
 from launch_ros_sandbox.descriptions.docker_policy import DockerPolicy
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
@@ -75,7 +77,9 @@ class LoadDockerNodes(Action):
         self._policy = policy
         self._node_descriptions = node_descriptions
         self._completed_future = None
-        self._container = _get_none_container()
+        self._started_task = None
+        self._container = None
+        self._shutdown_lock = Lock()
         self._docker_client = docker.from_env()
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -149,7 +153,12 @@ class LoadDockerNodes(Action):
         self,
         context: LaunchContext
     ) -> None:
-        """Start the Docker container and load all nodes into it."""
+        """Start the Docker container and load all nodes into it.
+
+        This will first attempt to pull the docker image, start the docker container, and then load
+        all of the nodes.
+
+        """
         self._pull_docker_image()
 
         self._start_docker_container()
@@ -170,10 +179,44 @@ class LoadDockerNodes(Action):
         This will start the Docker container and run each ROS 2 node from inside that container.
         There is no additional work required, so this function always returns None.
         """
+        context.register_event_handler(
+            OnShutdown(
+                on_shutdown=self.__on_shutdown
+            )
+        )
+
         self._completed_future = create_future(context.asyncio_loop)
 
-        context.asyncio_loop.create_task(
+        self._started_task = context.asyncio_loop.create_task(
             self._start_docker_nodes(context)
         )
 
         return None
+
+    def __on_shutdown(
+        self,
+        event: Event,
+        context: LaunchContext
+    ) -> Optional[SomeActionsType]:
+        """Run when the shutdown signal has been received.
+
+        This will cancel the started task, if running, call cancel
+        on the completed future, and stop the container.
+
+        """
+        with self.shutdown_lock:
+
+            # if still starting cancel
+            if self._started_task is not None:
+                try:
+                    self._started_task.cancel()
+                except CancelledError:
+                    self._started_task = None
+
+            if self.__completed_future is not None:
+                self.__completed_future.cancel()
+                self.__completed_future = None
+
+                if self._container is not None:
+                    self._container.stop()
+                    self._container = None
