@@ -247,6 +247,3 @@ class DockerPolicy(Policy):
 
         # TODO: Move logic for creating sandbox into LoadDockerNodes.
         return LoadDockerNodes()
-
-
-Policy.register(DockerPolicy)

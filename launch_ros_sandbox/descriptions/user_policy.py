@@ -115,6 +115,3 @@ class UserPolicy(Policy):
 
         # TODO: LaunchAsUser is currently NO-OP due to all sandboxing logic being handled here.
         return LoadRunAsNodes()
-
-
-Policy.register(UserPolicy)
