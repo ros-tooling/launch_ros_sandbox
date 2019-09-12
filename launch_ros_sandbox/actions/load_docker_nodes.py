@@ -26,6 +26,7 @@ from typing import Optional
 
 from launch import Action
 from launch import LaunchContext
+from launch.utilities import create_future
 
 
 class LoadDockerNodes(Action):
@@ -35,6 +36,19 @@ class LoadDockerNodes(Action):
     LoadDockerNodes should only be constructed by `DockerPolicy.apply`.
     TODO: Move the logic for launching the sandbox environment into `LoadDockerNodes.execute`
     """
+
+    def __init__(
+        self,
+        **kwargs
+    ) -> None:
+        """
+        Construct the LoadDockerNodes Action.
+
+        Parameters regarding initialization are copied here. Most of the arguments are forwarded to
+        Action.
+        """
+        super().__init__(**kwargs)
+        self._completed_future = None
 
     def _start_docker_container(self) -> None:
         """Start Docker container."""
@@ -46,7 +60,7 @@ class LoadDockerNodes(Action):
 
     def get_asyncio_future(self) -> Optional[Future]:
         """Return the asyncio Future that represents the lifecycle of the Docker container."""
-        return None
+        return self._completed_future
 
     def execute(
         self,
@@ -58,4 +72,5 @@ class LoadDockerNodes(Action):
         This will start the Docker container and run each ROS 2 node from inside that container.
         There is no additional work required, so this function always returns None.
         """
+        self._completed_future = create_future(context.asyncio_loop)
         return None

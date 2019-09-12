@@ -73,10 +73,13 @@ class SandboxedNodeContainer(Action):
             return None
 
         if self.__policy is not None:
-            self.__policy.apply(
+            sandboxing_action = self.__policy.apply(
                 context=context,
                 node_descriptions=self.__node_descriptions
             )
+
+            if sandboxing_action is not None:
+                return [sandboxing_action]
 
         return None
 
