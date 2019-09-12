@@ -25,6 +25,7 @@ setup(
     install_requires=[
         'setuptools',
         'launch',
+        'docker',
     ],
     zip_safe=True,
     description='Sandbox extension to ROS 2 Launch.',
