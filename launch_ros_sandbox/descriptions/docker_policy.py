@@ -19,6 +19,7 @@ Using DockerPolicy, users can load one or more nodes into a particular Docker co
 DockerPolicy requires that Docker 18+ and docker-py 4.0+ is installed.
 
 Example:
+-------
     ld = launch.LaunchDescription()
 
     ld.add_action(
@@ -120,7 +121,6 @@ class DockerPolicy(Policy):
             self._entrypoint = entrypoint or '/bin/bash -c'
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
-        self._container = None
         self._container_name = container_name or _generate_container_name()
 
     @property

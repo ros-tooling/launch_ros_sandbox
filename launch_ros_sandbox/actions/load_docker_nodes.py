@@ -42,6 +42,16 @@ def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[s
     return [entrypoint, 'ros2', 'run', package, executable]
 
 
+def _get_none_container() -> Optional[docker.models.containers.Container]:
+    """
+    Return None.
+
+    Workaround for Python3.5 compliance, since we can't hint member variable types until 3.6
+    This lets us initialize a member variable as None but still note its type for mypy.
+    """
+    return None
+
+
 class LoadDockerNodes(Action):
     """
     LoadDockerNodes is an Action that controls the sandbox environment spawned by `DockerPolicy`.
@@ -65,7 +75,7 @@ class LoadDockerNodes(Action):
         self._policy = policy
         self._node_descriptions = node_descriptions
         self._completed_future = None
-        self._container = None
+        self._container = _get_none_container()
         self._docker_client = docker.from_env()
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -76,9 +86,7 @@ class LoadDockerNodes(Action):
         This will download the Docker image if it is not currently cached and will update it if its
         out of date.
 
-        Raises:
-            ImageNotFound if Docker cannot find the remote repo for the image to pull
-
+        :raises ImageNotFound if Docker cannot find the remote repo for the image to pull
         """
         self.__logger.debug('Pulling image {}'.format(self._policy.image_name))
 
