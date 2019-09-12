@@ -50,15 +50,10 @@ import time
 from typing import List
 from typing import Optional
 
-import docker
-from docker.errors import ImageNotFound
-
 import launch
 from launch import Action
 from launch import LaunchContext
-from launch.utilities import perform_substitutions
 
-from launch_ros_sandbox.actions.load_docker_nodes import LoadDockerNodes
 from launch_ros_sandbox.descriptions.policy import Policy
 from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 
@@ -134,36 +129,6 @@ class DockerPolicy(Policy):
         self._container = None
         self._container_name = container_name or _generate_container_name()
 
-    def _load_docker_container(self) -> None:
-        """Pull an image and then run the container."""
-        # Create low-level Docker client for streaming logs (Mac/Ubuntu only)
-        self._low_docker_client = docker.APIClient(base_url='unix://var/run/docker.sock')
-        self._docker_client = docker.from_env()
-
-        try:
-            # Pull the image first. Will update if already pulled.
-            self.__logger.debug('Pulling image {}'.format(self._image_name))
-            self._docker_client.images.pull(
-                repository=self._repository,
-                tag=self._tag
-            )
-
-            # Run the container and keep track of its ID.
-            self._container = self._docker_client.containers.run(
-                image=self._image_name,
-                detach=True,
-                auto_remove=True,
-                tty=True,
-                name=self.container_name
-            )
-
-            self.__logger.info('Running Docker container: \"{}\"'.format(self.container_name))
-        except ImageNotFound:
-            available_images = self._low_docker_client.images()
-            self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
-                                    'images available are:\n{}'
-                                    .format(self._image_name, '\n'.join(available_images)))
-
     @property
     def entrypoint(self) -> str:
         """Return the Docker container entrypoint."""
@@ -173,11 +138,6 @@ class DockerPolicy(Policy):
     def container_name(self) -> str:
         """Return the Docker container name."""
         return self._container_name
-
-    @property
-    def docker_client(self) -> docker.DockerClient:
-        """Return the Docker client."""
-        return self._docker_client
 
     @property
     def repository(self) -> str:
@@ -210,40 +170,12 @@ class DockerPolicy(Policy):
         `ros2 run` CLI within the container. The node and package names are resolved using
         substitutions, a utility from Launch.
         """
-        if self._container is None:
-            self._load_docker_container()
+        from launch_ros_sandbox.actions.load_docker_nodes import LoadDockerNodes
+        
+        return LoadDockerNodes(
+            policy=self,
+            node_descriptions=node_descriptions
+        )
 
-        for description in node_descriptions:
-            package_name = perform_substitutions(
-                context,
-                description.package
-            )
 
-            executable_name = perform_substitutions(
-                context,
-                description.node_executable
-            )
-
-            if self._container is not None:
-                cmd = _containerized_cmd(
-                    entrypoint=self._entrypoint,
-                    package=package_name,
-                    executable=executable_name
-                )
-
-                exit_code, output = self._container.exec_run(
-                    cmd=cmd,
-                    detach=True,
-                    tty=True
-                )
-
-                self.__logger.debug('Executed command: {}'.format(cmd))
-                self.__logger.debug('Exit Code: {}'.format(exit_code))
-                self.__logger.debug('Output: type={} value={}'.format(type(output), output))
-            else:
-                self.__logger.error(
-                    'Could not run cmd: \"package={}, executable={}\" due to there '
-                    'being no active container!'.format(package_name, executable_name))
-
-        # TODO: Move logic for creating sandbox into LoadDockerNodes.
-        return LoadDockerNodes()
+Policy.register(DockerPolicy)

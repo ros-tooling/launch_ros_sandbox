@@ -24,9 +24,22 @@ from asyncio import Future
 from typing import List
 from typing import Optional
 
+import docker
+
+import launch
 from launch import Action
 from launch import LaunchContext
 from launch.utilities import create_future
+from launch.utilities import perform_substitutions
+
+from launch_ros_sandbox.descriptions.docker_policy import DockerPolicy
+from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
+
+
+def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[str]:
+    """Prepare the command for executing within the Docker container."""
+    # Use ros2 CLI command to find the executable
+    return [entrypoint, 'ros2', 'run', package, executable]
 
 
 class LoadDockerNodes(Action):
@@ -39,6 +52,8 @@ class LoadDockerNodes(Action):
 
     def __init__(
         self,
+        policy: DockerPolicy,
+        node_descriptions: List[SandboxedNode],
         **kwargs
     ) -> None:
         """
@@ -48,15 +63,87 @@ class LoadDockerNodes(Action):
         Most of the arguments are forwarded to Action.
         """
         super().__init__(**kwargs)
+        self._policy = policy
+        self._node_descriptions = node_descriptions
         self._completed_future = None
+        self._container = None
+        self._docker_client = docker.from_env()
+        self.__logger = launch.logging.get_logger(__name__)
+
+    def _pull_docker_image(self) -> None:
+        """
+        Pull the docker image.
+
+        This will download the Docker image if it is not currently cached and will update it if its
+        out of date.
+        """
+        self.__logger.debug('Pulling image {}'.format(self._policy.image_name))
+
+        # This method may throw an ImageNotFound exception. Let the exception propogate upwards
+        # since further operations should not continue
+        self._docker_client.images.pull(
+            repository=self._policy.repository,
+            tag=self._policy.tag
+        )
 
     def _start_docker_container(self) -> None:
         """Start Docker container."""
-        pass
+        self._container = self._docker_client.containers.run(
+            image=self._policy.image_name,
+            detach=True,
+            auto_remove=True,
+            tty=True,
+            name=self._policy.container_name
+        )
 
-    def _load_nodes_in_docker(self) -> None:
+        self.__logger.debug('Running Docker container: \"{}\"'.format(self._policy.container_name))
+
+    def _load_nodes_in_docker(
+        self,
+        context: LaunchContext
+    ) -> None:
         """Load all nodes into Docker container."""
-        pass
+        if self._container is None:
+            self.__logger.error('Unable to load nodes into Docker container: '
+                                'no active Docker container!')
+            return
+
+        for description in self._node_descriptions:
+            package_name = perform_substitutions(
+                context=context,
+                subs=description.package
+            )
+
+            executable_name = perform_substitutions(
+                context=context,
+                subs=description.node_executable
+            )
+
+            cmd = _containerized_cmd(
+                entrypoint=self._policy.entrypoint,
+                package=package_name,
+                executable=executable_name
+            )
+
+            self._container.exec_run(
+                cmd=cmd,
+                detach=True,
+                tty=True,
+            )
+
+            self.__logger.debug('Running \"{}\" in container: \"{}\"'
+                                .format(cmd, self._policy.container_name))
+
+    async def _start_docker_nodes(
+        self,
+        context: LaunchContext
+    ) -> None:
+        """Start the Docker container and load all nodes into it."""
+        self._pull_docker_image()
+
+        self._start_docker_container()
+
+        self._load_nodes_in_docker(context)
 
     def get_asyncio_future(self) -> Optional[Future]:
         """Return the asyncio Future that represents the lifecycle of the Docker container."""
@@ -73,4 +160,9 @@ class LoadDockerNodes(Action):
         There is no additional work required, so this function always returns None.
         """
         self._completed_future = create_future(context.asyncio_loop)
+
+        context.asyncio_loop.create_task(
+            self._start_docker_nodes(context)
+        )
+
         return None
