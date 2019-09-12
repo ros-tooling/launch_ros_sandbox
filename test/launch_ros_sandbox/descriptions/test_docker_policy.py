@@ -71,3 +71,63 @@ class TestDockerPolicy(unittest.TestCase):
         assert docker_policy.image_name == 'ubuntu:bionic'
         assert docker_policy.repository == 'ubuntu'
         assert docker_policy.tag == 'bionic'
+
+    def test_tag_defaults_to_dashing_desktop_if_repository_is_manually_set(self) -> None:
+        """Verify DockerPolicy tag defaults to 'dashing-desktop' if repository is 'osrf/ros'."""
+        docker_policy = DockerPolicy(
+            repository='osrf/ros',
+        )
+
+        assert docker_policy.image_name == 'osrf/ros:dashing-desktop'
+        assert docker_policy.repository == 'osrf/ros'
+        assert docker_policy.tag == 'dashing-desktop'
+
+    def test_entrypoint_assign_default_repo_default_tag(self) -> None:
+        """Verify entrypoint can be set if repo and tag are defaults."""
+        docker_policy = DockerPolicy(
+            entrypoint='foo'
+        )
+
+        assert docker_policy.entrypoint == 'foo'
+        assert docker_policy.repository == 'osrf/ros'
+        assert docker_policy.tag == 'dashing-desktop'
+
+    def test_entrypoint_assign_default_repo(self) -> None:
+        """Verify entrypoint can be set if repo is default."""
+        docker_policy = DockerPolicy(
+            entrypoint='foo',
+            tag='bar'
+        )
+
+        assert docker_policy.entrypoint == 'foo'
+        assert docker_policy.repository == 'osrf/ros'
+        assert docker_policy.tag == 'bar'
+
+    def test_entrypoint_assign_default_tag(self) -> None:
+        """Verify entrypoint can be set if tag is default."""
+        docker_policy = DockerPolicy(
+            entrypoint='foo',
+            repository='bar'
+        )
+
+        assert docker_policy.entrypoint == 'foo'
+        assert docker_policy.repository == 'bar'
+        assert docker_policy.tag == 'latest'
+
+    def test_entrypoint_default_osrf_repo(self) -> None:
+        """Verify entrypoint is 'ros_entrypoint' if repo is set to 'osrf/ros'."""
+        docker_policy = DockerPolicy(
+            repository='osrf/ros'
+        )
+
+        assert docker_policy.repository == 'osrf/ros'
+        assert docker_policy.entrypoint == '/ros_entrypoint.sh'
+
+    def test_entrypoint_default_not_osrf_repo(self) -> None:
+        """Verify entrypoint is '/bin/bash -c' if repo is set to not 'osrf/ros'."""
+        docker_policy = DockerPolicy(
+            repository='foo'
+        )
+
+        assert docker_policy.repository == 'foo'
+        assert docker_policy.entrypoint == '/bin/bash -c'

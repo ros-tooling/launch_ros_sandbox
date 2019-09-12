@@ -117,25 +117,18 @@ class DockerPolicy:
         """
         self.__logger = launch.logging.get_logger(__name__)
 
-        # Calculate the actual tag and repository based on if either are set.
-        if repository is not None:
-            if repository == _DEFAULT_DOCKER_REPO:
-                self._tag = tag or _DEFAULT_DOCKER_REPO
-            else:
-                self._tag = tag or 'latest'
-        elif tag is not None:
-            self._repository = _DEFAULT_DOCKER_REPO
-            self._tag = tag
-        else:
-            self._repository = _DEFAULT_DOCKER_REPO
-            self._tag = _DEFAULT_DOCKER_TAG
+        # Evaluate repository first since the evaluation of tag and entrypoint depend upon it.
+        self._repository = repository or _DEFAULT_DOCKER_REPO
 
-        if entrypoint is not None:
-            self._entrypoint = entrypoint
-        elif self._repository == _DEFAULT_DOCKER_REPO:
-            self._entrypoint = _DEFAULT_EXEC_ENTRYPOINT
+        if self._repository == _DEFAULT_DOCKER_REPO:
+            self._tag = tag or _DEFAULT_DOCKER_TAG
+            self._entrypoint = entrypoint or _DEFAULT_EXEC_ENTRYPOINT
         else:
-            self._entrypoint = '/bin/bash -c'
+            # Repository is not the default repo, so assume we're not using an osrf image. This
+            # changes the default tag to be the conventional 'latest' and default entrypoint to be
+            # bash.
+            self._tag = tag or 'latest'
+            self._entrypoint = entrypoint or '/bin/bash -c'
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container = None
@@ -170,6 +163,11 @@ class DockerPolicy:
             self.__logger.exception('Could not find the Docker image with name: {}.\nThe only '
                                     'images available are:\n{}'
                                     .format(self._image_name, '\n'.join(available_images)))
+
+    @property
+    def entrypoint(self) -> str:
+        """Return the Docker container entrypoint."""
+        return self._entrypoint
 
     @property
     def container_name(self) -> str:
