@@ -153,7 +153,8 @@ class LoadDockerNodes(Action):
         self,
         context: LaunchContext
     ) -> None:
-        """Start the Docker container and load all nodes into it.
+        """
+        Start the Docker container and load all nodes into it.
 
         This will first attempt to pull the docker image, start the docker container, and then load
         all of the nodes.
@@ -198,7 +199,8 @@ class LoadDockerNodes(Action):
         event: Event,
         context: LaunchContext
     ) -> Optional[SomeActionsType]:
-        """Run when the shutdown signal has been received.
+        """
+        Run when the shutdown signal has been received.
 
         This will cancel the started task, if running, call cancel
         on the completed future, and stop the container.
