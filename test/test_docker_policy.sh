@@ -10,14 +10,14 @@ task_id=$!
 echo "TaskID: $task_id"
 
 echo "Checking if sandboxed-listener-node is running..."
-docker inspect -f {{.State.Running}} sandboxed-listener-node
+docker inspect -f "{{.State.Running}}" sandboxed-listener-node
 is_running=$?
 
 # Wait until the docker container is running. docker inspect will return 0 when it does.
 while [[ $is_running -ne 0 ]]
 do
   sleep 1
-  docker inspect -f {{.State.Running}} sandboxed-listener-node
+  docker inspect -f "{{.State.Running}}" sandboxed-listener-node
   is_running=$?
 done
 
@@ -34,7 +34,7 @@ kill $task_id
 sleep 2
 
 echo "Checking if sandboxed-listener-node is running..."
-docker inspect -f {{.State.Running}} sandboxed-listener-node
+docker inspect -f "{{.State.Running}}" sandboxed-listener-node
 
 # Check the exit code of docker inspect. 0 is returned only if it is running.
 # This check will set the exit code to 0 only if the exit code is not 0.
