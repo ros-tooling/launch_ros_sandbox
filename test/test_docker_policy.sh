@@ -30,6 +30,8 @@ echo "Stopping Docker container..."
 # the terminal.
 kill -INT $task_id
 sleep 2
+
+# SIGTERM is required also if launch is ran in the background, this might be a bug in launch.
 kill $task_id
 sleep 2
 
