@@ -7,8 +7,6 @@
   <maintainer email="ros-contributions@amazon.com">AWS ROS Contributions</maintainer>
   <license>Apache 2.0</license>
 
-  <buildtool_depend>ament_python</buildtool_depend>
-
   <depend>python3-docker</depend>
   <depend>launch</depend>
   <depend>launch_ros</depend>
@@ -16,7 +14,8 @@
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
-  <test_depend>ament_mypy</test_depend>
+  <!-- TODO: uncomment this once ament_mypy has been released. At that time, also update test_mypy.py -->
+  <!-- <test_depend>ament_mypy</test_depend> -->
   <test_depend>python3-pytest</test_depend>
 
   <export>

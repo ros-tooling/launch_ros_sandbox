@@ -12,11 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ament_mypy.main import main
 import pytest
 
 
 @pytest.mark.mypy
 @pytest.mark.linter
 def test_mypy():
-    assert main(argv=[]) == 0, 'Found errors'
+    # TODO: when ament_mypy is officially released, remove this check and move import to the top
+    # of the file. Until then, we still use it internally as developers.
+    try:
+        from ament_mypy.main import main
+        assert main(argv=[]) == 0, 'Found errors'
+    except ImportError:
+        pass

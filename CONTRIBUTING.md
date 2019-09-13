@@ -1,5 +1,4 @@
 # Contributing Guidelines
-
 Thank you for your interest in contributing to our project. Whether it's a bug report, new feature, correction, or additional
 documentation, we greatly value feedback and contributions from our community.
 
@@ -8,7 +7,6 @@ information to effectively respond to your bug report or contribution.
 
 
 ## Reporting Bugs/Feature Requests
-
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
 
 When filing an issue, please check [existing open](https://github.com/aws-robotics/launch-ros-sandbox/issues), or [recently closed](https://github.com/aws-robotics/launch-ros-sandbox/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20), issues to make sure somebody else hasn't already
@@ -55,7 +53,18 @@ If you discover a potential security issue in this project we ask that you notif
 
 
 ## Licensing
+Any contribution that you make to this repository will
+be under the Apache 2 License, as dictated by that
+[license](http://www.apache.org/licenses/LICENSE-2.0.html):
 
-See the [LICENSE](https://github.com/aws-robotics/launch-ros-sandbox/blob/master/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+~~~
+5. Submission of Contributions. Unless You explicitly state otherwise,
+   any Contribution intentionally submitted for inclusion in the Work
+   by You to the Licensor shall be under the terms and conditions of
+   this License, without any additional terms or conditions.
+   Notwithstanding the above, nothing herein shall supersede or modify
+   the terms of any separate license agreement you may have executed
+   with Licensor regarding such Contributions.
+~~~
 
 We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.
