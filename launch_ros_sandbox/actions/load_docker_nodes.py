@@ -204,7 +204,7 @@ class LoadDockerNodes(Action):
         on the completed future, and stop the container.
 
         """
-        with self.shutdown_lock:
+        with self._shutdown_lock:
 
             # if still starting cancel
             if self._started_task is not None:
@@ -213,9 +213,9 @@ class LoadDockerNodes(Action):
                 except CancelledError:
                     self._started_task = None
 
-            if self.__completed_future is not None:
-                self.__completed_future.cancel()
-                self.__completed_future = None
+            if self._completed_future is not None:
+                self._completed_future.cancel()
+                self._completed_future = None
 
                 if self._container is not None:
                     self._container.stop()
