@@ -48,6 +48,7 @@ parameters to docker-py.
 """
 
 import time
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -84,7 +85,7 @@ class DockerPolicy(Policy):
         tag: Optional[str] = None,
         entrypoint: Optional[str] = None,
         container_name: Optional[str] = None,
-        run_args: Optional[Dict[str, str]] = None,
+        run_args: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         Construct the DockerPolicy.
@@ -106,7 +107,7 @@ class DockerPolicy(Policy):
         identify when listing all the containers. Defaults to
         ros2launch-sandboxed-node-<Hour><Minute><Sec> where the time is when the DockerPolicy
         was constructed.
-        :param: run_args is a dictionary of arguments (str to str) passed into the 'run' command
+        :param: run_args is a dictionary of arguments (str to Any) passed into the 'run' command
         for the Docker container. See [1] for supported arguments.
         'image', 'tty', 'detach', 'auto_remove', and 'name' are not valid keywords for 'run_args'
         due to being defined by LoadDockerNodes.
@@ -162,7 +163,7 @@ class DockerPolicy(Policy):
         return '{}:{}'.format(self.repository, self.tag)
 
     @property
-    def run_args(self) -> Optional[Dict[str, str]]:
+    def run_args(self) -> Optional[Dict[str, Any]]:
         """Return the dictionary of Docker container run arguments."""
         return self._run_args
 
