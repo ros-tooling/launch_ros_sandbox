@@ -102,13 +102,20 @@ class LoadDockerNodes(Action):
         )
 
     def _start_docker_container(self) -> None:
-        """Start Docker container."""
+        """
+        Start Docker container.
+
+        Run arguments will be forwarded to the containers run command if they exist.
+        """
+        tmp_run_args = self._policy.run_args or {}
+
         self._container = self._docker_client.containers.run(
             image=self._policy.image_name,
             detach=True,
             auto_remove=True,
             tty=True,
-            name=self._policy.container_name
+            name=self._policy.container_name,
+            **tmp_run_args
         )
 
         self.__logger.debug('Running Docker container: \"{}\"'.format(self._policy.container_name))
