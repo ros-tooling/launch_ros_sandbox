@@ -48,6 +48,7 @@ parameters to docker-py.
 """
 
 import time
+from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -83,6 +84,7 @@ class DockerPolicy(Policy):
         tag: Optional[str] = None,
         entrypoint: Optional[str] = None,
         container_name: Optional[str] = None,
+        run_args: Optional[Dict[str, str]] = None,
     ) -> None:
         """
         Construct the DockerPolicy.
@@ -104,6 +106,8 @@ class DockerPolicy(Policy):
         identify when listing all the containers. Defaults to
         ros2launch-sandboxed-node-<Hour><Minute><Sec> where the time is when the DockerPolicy
         was constructed.
+        :param: run_args is a dictionary of arguments (str to str) passed into the 'run' command
+        for the Docker container.
         """
         self.__logger = launch.logging.get_logger(__name__)
 
@@ -122,6 +126,7 @@ class DockerPolicy(Policy):
 
         self._image_name = '{}:{}'.format(self._repository, self._tag)
         self._container_name = container_name or _generate_container_name()
+        self._run_args = run_args
 
     @property
     def entrypoint(self) -> str:
@@ -151,6 +156,11 @@ class DockerPolicy(Policy):
         The image name is defined as 'repository:tag'.
         """
         return '{}:{}'.format(self.repository, self.tag)
+
+    @property
+    def run_args(self) -> Optional[Dict[str, str]]:
+        """Return the dictionary of Docker container run arguments."""
+        return self._run_args
 
     def apply(
         self,
