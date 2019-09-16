@@ -107,7 +107,11 @@ class DockerPolicy(Policy):
         ros2launch-sandboxed-node-<Hour><Minute><Sec> where the time is when the DockerPolicy
         was constructed.
         :param: run_args is a dictionary of arguments (str to str) passed into the 'run' command
-        for the Docker container.
+        for the Docker container. See [1] for supported arguments.
+        'image', 'tty', 'detach', 'auto_remove', and 'name' are not valid keywords for 'run_args'
+        due to being defined by LoadDockerNodes.
+
+         [1]: https://docker-py.readthedocs.io/en/stable/containers.html#docker.models.containers.ContainerCollection.run # noqa
         """
         self.__logger = launch.logging.get_logger(__name__)
 
