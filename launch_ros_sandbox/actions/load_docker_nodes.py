@@ -97,7 +97,7 @@ class LoadDockerNodes(Action):
         # This method may throw an ImageNotFound exception. Let the exception propogate upwards
         # since further operations should not continue
         self._docker_client.images.pull(
-            repository=self._policy.repository,
+            self._policy.repository,
             tag=self._policy.tag
         )
 
@@ -110,7 +110,7 @@ class LoadDockerNodes(Action):
         tmp_run_args = self._policy.run_args or {}
 
         self._container = self._docker_client.containers.run(
-            image=self._policy.image_name,
+            self._policy.image_name,
             detach=True,
             auto_remove=True,
             tty=True,
