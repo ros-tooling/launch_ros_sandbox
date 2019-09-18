@@ -18,10 +18,17 @@
 from setuptools import find_packages
 from setuptools import setup
 
+package_name = 'launch_ros_sandbox'
+
 setup(
-    name='launch_ros_sandbox',
+    name=package_name,
     version='0.1.0',
     packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/' + package_name, ['package.xml']),
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+    ],
     install_requires=[
         'setuptools',
         'launch',
