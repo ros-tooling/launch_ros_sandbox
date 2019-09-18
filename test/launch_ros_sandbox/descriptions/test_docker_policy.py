@@ -131,3 +131,21 @@ class TestDockerPolicy(unittest.TestCase):
 
         assert docker_policy.repository == 'foo'
         assert docker_policy.entrypoint == '/bin/bash -c'
+
+    def test_run_args_set_correctly(self) -> None:
+        """Verify the DockerPolicy run arguments match for the Docker Image."""
+        run_args = {
+                'cpuset_cpus': 0,
+                'mem_limit': '128m'
+            }
+        docker_policy = DockerPolicy(
+            run_args=run_args
+        )
+
+        assert docker_policy.run_args == run_args
+
+    def test_empty_run_args_set_correctly(self) -> None:
+        """Verify the DockerPolicy has no run args if not set."""
+        docker_policy = DockerPolicy()
+
+        assert docker_policy.run_args is None
