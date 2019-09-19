@@ -1,5 +1,8 @@
 #!/bin/bash
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+
 # pull the image now so that we don't have to guess/query when its done in the script
 docker pull osrf/ros:dashing-desktop
 
@@ -22,9 +25,14 @@ do
 done
 
 # Run listener in the container spun up by DockerPolicy for 5 seconds
-echo "Executing listener in Docker container..."
-# TODO: Execute command to check for memory size
-# timeout 5 docker exec -t sandboxed-listener-node /ros_entrypoint.sh ros2 run demo_nodes_cpp listener
+echo "Checking memory limits in Docker container..."
+memory=$(docker inspect sandboxed-listener-node | jq '.[0].HostConfig.Memory')
+if [[ "$memory" -eq "134217728" ]]; then
+    printf "${GREEN}Memory limits correctly set to 128m!\n";
+else
+    printf "${RED}Memory limits not correctly set to 128m!\n";
+fi
+
 echo "Stopping Docker container..."
 
 # Note: these sleep commands are here just so the following command executes after stdout appears on
