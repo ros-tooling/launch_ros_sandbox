@@ -67,7 +67,7 @@ def generate_launch_description() -> LaunchDescription:
                 repository='osrf/ros',
                 container_name='sandboxed-listener-node',
                 run_args={
-                    'mem_limit':'128m'
+                    'mem_limit': '128m'
                 }
             ),
             node_descriptions=[

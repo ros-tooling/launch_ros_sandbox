@@ -70,7 +70,7 @@ def generate_launch_description() -> LaunchDescription:
                 repository='osrf/ros',
                 container_name='sandboxed-listener-node',
                 run_args={
-                    'cpuset_cpus':'0'
+                    'cpuset_cpus': '0'
                 }
             ),
             node_descriptions=[
