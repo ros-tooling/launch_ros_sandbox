@@ -29,9 +29,11 @@ done
 echo "Checking memory limits in Docker container..."
 memory=$(docker inspect sandboxed-listener-node | jq '.[0].HostConfig.Memory')
 if [[ "$memory" -eq "134217728" ]]; then
-    printf "${GREEN}Memory limits correctly set to 128m!${NORM}\n";
+    printf "${GREEN}PASS: Memory limits correctly set to 128m!${NORM}\n";
+    result=0
 else
-    printf "${RED}Memory limits not correctly set to 128m!${NORM}\n";
+    printf "${RED}FAIL: Memory limits not correctly set to 128m!${NORM}\n";
+    result=1
 fi
 
 echo "Stopping Docker container..."
@@ -49,7 +51,7 @@ echo "Checking if sandboxed-listener-node is running..."
 docker inspect -f "{{.State.Running}}" sandboxed-listener-node
 
 # Check the exit code of docker inspect. 0 is returned only if it is running.
-# This check will set the exit code to 0 only if the exit code is not 0.
-[[ $? -ne 0 ]]
+# This check will set the exit code to 0 only if the Docker container is not running and the memory check passed.
+[[ $? -ne 0 && result -eq 0 ]]
 
 exit $?
