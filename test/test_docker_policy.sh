@@ -1,5 +1,9 @@
 #!/bin/bash
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NORM='\033[0m'
+
 # pull the image now so that we don't have to guess/query when its done in the script
 docker pull osrf/ros:dashing-desktop
 
@@ -40,6 +44,10 @@ docker inspect -f "{{.State.Running}}" sandboxed-listener-node
 
 # Check the exit code of docker inspect. 0 is returned only if it is running.
 # This check will set the exit code to 0 only if the exit code is not 0.
-[[ $? -ne 0 ]]
-
-exit $?
+if [[ $? -ne 0 ]]; then
+  print "${GREEN}PASS${NORM}\n"
+  exit 0
+else
+  printf "${RED}FAIL${NORM}\n"
+  exit 1
+fi
