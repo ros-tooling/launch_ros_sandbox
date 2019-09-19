@@ -2,6 +2,7 @@
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+NORM='\033[0m'
 
 # pull the image now so that we don't have to guess/query when its done in the script
 docker pull osrf/ros:dashing-desktop
@@ -28,9 +29,9 @@ done
 echo "Checking memory limits in Docker container..."
 memory=$(docker inspect sandboxed-listener-node | jq '.[0].HostConfig.Memory')
 if [[ "$memory" -eq "134217728" ]]; then
-    printf "${GREEN}Memory limits correctly set to 128m!\n";
+    printf "${GREEN}Memory limits correctly set to 128m!${NORM}\n";
 else
-    printf "${RED}Memory limits not correctly set to 128m!\n";
+    printf "${RED}Memory limits not correctly set to 128m!${NORM}\n";
 fi
 
 echo "Stopping Docker container..."
