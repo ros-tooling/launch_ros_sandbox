@@ -1,10 +1,10 @@
-launch\_ros\_sandbox\.descriptions package
+Descriptions
 ==========================================
 
 Submodules
 ----------
 
-launch\_ros\_sandbox\.descriptions\.docker\_policy module
+docker\_policy module
 ---------------------------------------------------------
 
 .. automodule:: launch_ros_sandbox.descriptions.docker_policy
@@ -12,7 +12,7 @@ launch\_ros\_sandbox\.descriptions\.docker\_policy module
     :undoc-members:
     :show-inheritance:
 
-launch\_ros\_sandbox\.descriptions\.policy module
+policy module
 -------------------------------------------------
 
 .. automodule:: launch_ros_sandbox.descriptions.policy
@@ -20,7 +20,7 @@ launch\_ros\_sandbox\.descriptions\.policy module
     :undoc-members:
     :show-inheritance:
 
-launch\_ros\_sandbox\.descriptions\.sandboxed\_node module
+sandboxed\_node module
 ----------------------------------------------------------
 
 .. automodule:: launch_ros_sandbox.descriptions.sandboxed_node
@@ -28,7 +28,7 @@ launch\_ros\_sandbox\.descriptions\.sandboxed\_node module
     :undoc-members:
     :show-inheritance:
 
-launch\_ros\_sandbox\.descriptions\.user module
+user module
 -----------------------------------------------
 
 .. automodule:: launch_ros_sandbox.descriptions.user
@@ -36,19 +36,10 @@ launch\_ros\_sandbox\.descriptions\.user module
     :undoc-members:
     :show-inheritance:
 
-launch\_ros\_sandbox\.descriptions\.user\_policy module
+user\_policy module
 -------------------------------------------------------
 
 .. automodule:: launch_ros_sandbox.descriptions.user_policy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: launch_ros_sandbox.descriptions
     :members:
     :undoc-members:
     :show-inheritance:

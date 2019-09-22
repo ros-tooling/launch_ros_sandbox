@@ -6,8 +6,8 @@ Subpackages
 
 .. toctree::
 
-    launch_ros_sandbox.actions
-    launch_ros_sandbox.descriptions
+    actions
+    descriptions
 
 Module contents
 ---------------
