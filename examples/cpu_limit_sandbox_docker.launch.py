@@ -50,15 +50,17 @@ from launch_ros_sandbox.descriptions import SandboxedNode
 
 def generate_launch_description() -> LaunchDescription:
     """
-    Create launch description for starting SandboxedNodeContainer with DockerPolicy.
+    Create a launch description for starting SandboxedNodeContainer with DockerPolicy.
 
-    Talker is loaded inside the SandboxedNodeContainer.
+    In this example, the C++ demo talker node is loaded inside the SandboxedNodeContainer called
+    'sandboxed-listener-node'.
+    The Docker policy uses a Docker image of ROS2 Dashing (Desktop) from 'osrf/ros'.
     When the sandboxed node is executed, it runs the ROS 2 node within the Docker container.
     The container continues to run until stopped externally.
     The talker node can be interacted with by launching a listener node.
     The listener node does not need to be launched from within the Docker container.
     Only CPU 0 will be available to the nodes.
-    Number of CPUs can be queried by running nproc inside the container.
+    The number of CPUs can be queried by running nproc inside the container.
     """
     ld = LaunchDescription()
 
