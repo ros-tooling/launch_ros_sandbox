@@ -5,7 +5,7 @@ sphinx:
 
 python:
   version: 3.6
-  system_packages: true
+  # system_packages: true
   install:
     # Install requirements as system packages using pip
     - requirements: docs/requirements.txt
