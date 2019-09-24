@@ -2,7 +2,7 @@
 
 Sandboxing plugin for launch_ros
 
-[Link to documentation]
+[Link to documentation](https://launch-ros-sandbox.readthedocs.io)
 
 # License
 
