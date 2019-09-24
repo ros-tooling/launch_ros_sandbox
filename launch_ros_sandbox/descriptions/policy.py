@@ -19,6 +19,7 @@ Policy represents a security policy that can be applied to a SandboxedNodeContai
 single method `apply` which performs the sandboxing on the ROS 2 nodes described by
 SandboxedNodeContainer. The `apply` method must be implemented by any security policy that extends
 Policy.
+
 """
 
 from abc import ABC
