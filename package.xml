@@ -4,10 +4,10 @@
   <name>launch_ros_sandbox</name>
   <version>0.0.1</version>
   <description>Extension to launch_ros to provide the ability to run nodes in sandboxed environments.</description>
-  <author email="ros-contributions@amazon.com">AWS RoboMaker</author>
   <maintainer email="ros-contributions@amazon.com">AWS RoboMaker</maintainer>
   <license>Apache 2.0</license>
-
+  <author email="ros-contributions@amazon.com">AWS RoboMaker</author>
+  
   <depend>python3-docker</depend>
   <depend>launch</depend>
   <depend>launch_ros</depend>
