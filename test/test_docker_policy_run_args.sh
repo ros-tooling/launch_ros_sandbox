@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This test must be run from the root directory of the package
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NORM='\033[0m'
@@ -28,11 +30,12 @@ done
 # Run listener in the container spun up by DockerPolicy for 5 seconds
 echo "Checking memory limits in Docker container..."
 memory=$(docker inspect sandboxed-listener-node | jq '.[0].HostConfig.Memory')
-if [[ "$memory" -eq "134217728" ]]; then
-    printf "${GREEN}PASS: Memory limits correctly set to 128m!${NORM}\n";
+expected_memory_128m="134217728";
+if [[ "$memory" -eq $expected_memory_128m ]]; then
+    printf "%bPASS: Memory limits correctly set to 128m!%b\n" "$GREEN" "$NORM";
     result=0
 else
-    printf "${RED}FAIL: Memory limits not correctly set to 128m!${NORM}\n";
+    printf "%bFAIL: Memory limits not correctly set to 128m!%b\n" "$RED" "$NORM";
     result=1
 fi
 
@@ -52,6 +55,10 @@ docker inspect -f "{{.State.Running}}" sandboxed-listener-node
 
 # Check the exit code of docker inspect. 0 is returned only if it is running.
 # This check will set the exit code to 0 only if the Docker container is not running and the memory check passed.
-[[ $? -ne 0 && result -eq 0 ]]
-
-exit $?
+if [[ $? -ne 0 && result -eq 0 ]]; then
+  printf "%b%s%b\n" "$GREEN" "PASS" "$NORM"
+  exit 0
+else
+  printf "%b%s%b\n" "$RED" "FAIL" "$NORM"
+  exit 1
+fi

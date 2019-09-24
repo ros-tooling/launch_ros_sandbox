@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This test must be run from the root directory of the package
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NORM='\033[0m'
@@ -45,9 +47,9 @@ docker inspect -f "{{.State.Running}}" sandboxed-listener-node
 # Check the exit code of docker inspect. 0 is returned only if it is running.
 # This check will set the exit code to 0 only if the exit code is not 0.
 if [[ $? -ne 0 ]]; then
-  printf "${GREEN}PASS${NORM}\n"
+  printf "%b%s%b\n" "$GREEN" "PASS" "$NORM"
   exit 0
 else
-  printf "${RED}FAIL${NORM}\n"
+  printf "%b%s%b\n" "$RED" "FAIL" "$NORM"
   exit 1
 fi
