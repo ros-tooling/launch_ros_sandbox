@@ -147,14 +147,23 @@ class LoadDockerNodes(Action):
                 executable=executable_name
             )
 
-            self._container.exec_run(
+            log_generator = self._container.exec_run(
                 cmd=cmd,
-                detach=True,
                 tty=True,
+                stream=True,
             )
+
+            context.asyncio_loop.create_task(self._handle_logs(log_generator))        
 
             self.__logger.debug('Running \"{}\" in container: \"{}\"'
                                 .format(cmd, self._policy.container_name))
+
+    async def _handle_logs(
+        self,
+        log_generator
+    ) -> None:
+        for log in log_generator:
+            print(log.decode('utf-8'))
 
     async def _start_docker_nodes(
         self,
@@ -191,7 +200,7 @@ class LoadDockerNodes(Action):
             OnShutdown(
                 on_shutdown=self.__on_shutdown
             )
-        )
+        )    
 
         self._completed_future = create_future(context.asyncio_loop)
 
