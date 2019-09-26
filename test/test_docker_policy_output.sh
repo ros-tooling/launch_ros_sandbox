@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# pull the image now so that we don't have to guess/query when its done in the script
+docker pull osrf/ros:dashing-desktop
+
 echo "Running './examples/talker_listener_sandbox_docker.launch.py' for 10 seconds"
 
 output=$(timeout -s INT 10s ./examples/talker_listener_sandbox_docker.launch.py)
