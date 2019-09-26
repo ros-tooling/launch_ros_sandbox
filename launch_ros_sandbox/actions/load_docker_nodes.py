@@ -163,6 +163,13 @@ class LoadDockerNodes(Action):
         self,
         log_generator
     ) -> None:
+        """
+        Process the logs from a container and print to the logger.
+
+        Expects the `log generator` returned from Docker-py's container.exec_run.
+        The generator blocks until a new log chunk is available.
+        The log chunk is of type `bytes`, so it must be decoded before its sent to the logger.
+        """
         for log in log_generator:
             self.__logger.info(log.decode('utf-8').rstrip())
 
