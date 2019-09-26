@@ -201,7 +201,7 @@ class LoadDockerNodes(Action):
             OnShutdown(
                 on_shutdown=self.__on_shutdown
             )
-        )    
+        )
 
         self._completed_future = create_future(context.asyncio_loop)
 
@@ -240,3 +240,5 @@ class LoadDockerNodes(Action):
                 if self._container is not None:
                     self._container.stop()
                     self._container = None
+
+        return None
