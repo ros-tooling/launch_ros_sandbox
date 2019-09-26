@@ -173,7 +173,7 @@ class LoadDockerNodes(Action):
         for log in log_generator:
             self.__logger.info(log.decode('utf-8').rstrip())
 
-    async def _start_docker_nodes(
+    def _start_docker_nodes(
         self,
         context: LaunchContext
     ) -> None:
@@ -212,8 +212,11 @@ class LoadDockerNodes(Action):
 
         self._completed_future = create_future(context.asyncio_loop)
 
-        self._started_task = context.asyncio_loop.create_task(
-            self._start_docker_nodes(context)
+        # This task may take some time to execute; run it in the default thread pool
+        self._started_task = context.asyncio_loop.run_in_executor(
+            None,
+            self._start_docker_nodes,
+            context
         )
 
         return None
