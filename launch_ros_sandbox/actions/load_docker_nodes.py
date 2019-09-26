@@ -21,7 +21,7 @@ as a Docker container. This Action is not exported and should only be used inter
 """
 
 from asyncio import CancelledError, Future
-
+from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 from typing import List, Optional
 
@@ -82,6 +82,7 @@ class LoadDockerNodes(Action):
         self._shutdown_lock = Lock()
         self._docker_client = docker.from_env()
         self.__logger = launch.logging.get_logger(__name__)
+        self._executor = ThreadPoolExecutor(max_workers=len(node_descriptions))
 
     def _pull_docker_image(self) -> None:
         """
@@ -153,17 +154,17 @@ class LoadDockerNodes(Action):
                 stream=True,
             )
 
-            context.asyncio_loop.create_task(self._handle_logs(log_generator))        
+            context.asyncio_loop.run_in_executor(self._executor, self._handle_logs, log_generator)
 
             self.__logger.debug('Running \"{}\" in container: \"{}\"'
                                 .format(cmd, self._policy.container_name))
 
-    async def _handle_logs(
+    def _handle_logs(
         self,
         log_generator
     ) -> None:
         for log in log_generator:
-            print(log.decode('utf-8'))
+            self.__logger.info(log.decode('utf-8').rstrip())
 
     async def _start_docker_nodes(
         self,
@@ -232,6 +233,7 @@ class LoadDockerNodes(Action):
                     self._started_task = None
 
             if self._completed_future is not None:
+                self._executor.shutdown(wait=False)
                 self._completed_future.cancel()
                 self._completed_future = None
 
