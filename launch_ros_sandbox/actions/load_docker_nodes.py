@@ -21,7 +21,7 @@ as a Docker container. This Action is not exported and should only be used inter
 """
 
 from asyncio import CancelledError, Future
-
+from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 from typing import List, Optional
 
@@ -82,6 +82,7 @@ class LoadDockerNodes(Action):
         self._shutdown_lock = Lock()
         self._docker_client = docker.from_env()
         self.__logger = launch.logging.get_logger(__name__)
+        self._executor = ThreadPoolExecutor(max_workers=len(node_descriptions))
 
     def _pull_docker_image(self) -> None:
         """
@@ -147,14 +148,30 @@ class LoadDockerNodes(Action):
                 executable=executable_name
             )
 
-            self._container.exec_run(
+            log_generator = self._container.exec_run(
                 cmd=cmd,
-                detach=True,
                 tty=True,
+                stream=True,
             )
+
+            context.asyncio_loop.run_in_executor(self._executor, self._handle_logs, log_generator)
 
             self.__logger.debug('Running \"{}\" in container: \"{}\"'
                                 .format(cmd, self._policy.container_name))
+
+    def _handle_logs(
+        self,
+        log_generator
+    ) -> None:
+        """
+        Process the logs from a container and print to the logger.
+
+        Expects the `log generator` returned from Docker-py's container.exec_run.
+        The generator blocks until a new log chunk is available.
+        The log chunk is of type `bytes`, so it must be decoded before its sent to the logger.
+        """
+        for log in log_generator:
+            self.__logger.info(log.decode('utf-8').rstrip())
 
     async def _start_docker_nodes(
         self,
@@ -223,9 +240,12 @@ class LoadDockerNodes(Action):
                     self._started_task = None
 
             if self._completed_future is not None:
+                self._executor.shutdown(wait=False)
                 self._completed_future.cancel()
                 self._completed_future = None
 
                 if self._container is not None:
                     self._container.stop()
                     self._container = None
+
+        return None
