@@ -17,12 +17,13 @@
 """
 Minimal example for demoing when an image found locally is ran in DockerPolicy.
 
-This example tries to run a ROS 2 node in a Docker container that exists only locally. 
+This example tries to run a ROS 2 node in a Docker container that exists only locally.
 The expected behavior is that launch logs to warn that the Image is not found and then runs the
 local image.
 """
+import sys
 
-from launch import LaunchDescription
+from launch import LaunchDescription, LaunchService
 
 from launch_ros_sandbox.actions import SandboxedNodeContainer
 from launch_ros_sandbox.descriptions import DockerPolicy
@@ -61,8 +62,6 @@ def generate_launch_description():
 
 
 if __name__ == '__main__':
-    import sys
-    from launch import LaunchService
     ls = LaunchService(argv=sys.argv[1:], debug=True)
     ls.include_launch_description(generate_launch_description())
     sys.exit(ls.run())
