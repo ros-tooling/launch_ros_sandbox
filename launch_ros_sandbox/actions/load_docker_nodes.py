@@ -181,7 +181,7 @@ class LoadDockerNodes(Action):
                 try:
                     self.__logger.info(log.decode('utf-8').strip())
                 except (UnicodeDecodeError, AttributeError):
-                    self.__logger.error('Unable to print log of type {}'.format(type(log)))
+                    self.__logger.exception('Unable to print log of type {}'.format(type(log)))
 
     async def _start_docker_nodes(
         self,
