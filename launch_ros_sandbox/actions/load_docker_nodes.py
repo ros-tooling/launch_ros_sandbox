@@ -27,6 +27,7 @@ from types import GeneratorType
 from typing import List, Optional
 
 import docker
+from docker.errors import ImageNotFound
 
 import launch
 from launch import Action, LaunchContext
@@ -97,7 +98,6 @@ class LoadDockerNodes(Action):
         self.__logger.debug('Pulling image {}'.format(self._policy.image_name))
 
         # This method may throw an ImageNotFound exception. Let the exception propogate upwards
-        # since further operations should not continue
         self._docker_client.images.pull(
             self._policy.repository,
             tag=self._policy.tag
@@ -111,6 +111,7 @@ class LoadDockerNodes(Action):
         """
         tmp_run_args = self._policy.run_args or {}
 
+        # This method may throw an ImageNotFound exception. Let the exception propogate upwards
         self._container = self._docker_client.containers.run(
             self._policy.image_name,
             detach=True,
@@ -194,9 +195,25 @@ class LoadDockerNodes(Action):
         all of the nodes.
 
         """
-        self._pull_docker_image()
+        # Try to pull the image and warn if it cannot be found.
+        try:
+            self._pull_docker_image()
+        except ImageNotFound as ex:
+            self.__logger.warn(ex)
 
-        self._start_docker_container()
+        # Try to run the image (even if it can't be pulled.) It might be available locally
+        # Log an error if it cannot be found and cancel the future to signal that there is no work.
+        try:
+            self._start_docker_container()
+        except ImageNotFound as ex:
+            self.__logger.error(ex)
+
+            with self._shutdown_lock:
+                if self._completed_future is not None:
+                    self._completed_future.cancel()
+                    self._completed_future = None
+
+            return
 
         self._load_nodes_in_docker(context)
 
