@@ -199,14 +199,18 @@ class LoadDockerNodes(Action):
         try:
             self._pull_docker_image()
         except ImageNotFound as ex:
-            self.__logger.warn(ex)
+            self.__logger.warn('Image "{}" could not be pulled but may be found locally.'
+                               .format(self._policy.image_name))
+            self.__logger.debug(ex)
 
         # Try to run the image (even if it can't be pulled.) It might be available locally
         # Log an error if it cannot be found and cancel the future to signal that there is no work.
         try:
             self._start_docker_container()
         except ImageNotFound as ex:
-            self.__logger.error(ex)
+            self.__logger.error('Image "{}" could not be found; execution of container "{}" failed.'
+                               .format(self._policy.image_name, self._policy.container_name))
+            self.__logger.debug(ex)
 
             with self._shutdown_lock:
                 if self._completed_future is not None:

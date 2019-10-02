@@ -10,7 +10,7 @@ then
     exit 3
 fi
 
-if [[ $output == *"[WARNING] [launch_ros_sandbox.actions.load_docker_nodes]: 404 Client Error: Not Found"* ]]
+if [[ $output == *"[WARNING]"* && $output == *"could not be pulled but may be found locally"* ]]
 then
     echo "The bad image was not found on DockerHub"
 else
@@ -18,7 +18,7 @@ else
     exit 1
 fi
 
-if [[ $output == *"[ERROR] [launch_ros_sandbox.actions.load_docker_nodes]: 404 Client Error: Not Found"* ]]
+if [[ $output == *"[ERROR]"* && $output == *"could not be found"* ]]
 then
     echo "The bad image could not be ran as a container. The test passed."
 else
