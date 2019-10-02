@@ -23,6 +23,7 @@ as a Docker container. This Action is not exported and should only be used inter
 from asyncio import CancelledError, Future
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
+from types import GeneratorType
 from typing import List, Optional
 
 import docker
@@ -161,7 +162,7 @@ class LoadDockerNodes(Action):
 
     def _handle_logs(
         self,
-        log_generator
+        log_generator: GeneratorType
     ) -> None:
         """
         Process the logs from a container and print to the logger.
@@ -171,7 +172,16 @@ class LoadDockerNodes(Action):
         The log chunk is of type `bytes`, so it must be decoded before its sent to the logger.
         """
         for log in log_generator:
-            self.__logger.info(log.decode('utf-8').rstrip())
+            if not log:
+                pass  # Sometimes we receive None
+            elif isinstance(log, GeneratorType):
+                for l in log:
+                    self.__logger.info(l.decode('utf-8').strip())
+            else:
+                try:
+                    self.__logger.info(log.decode('utf-8').strip())
+                except (UnicodeDecodeError, AttributeError):
+                    self.__logger.exception('Unable to print log of type {}'.format(type(log)))
 
     async def _start_docker_nodes(
         self,
