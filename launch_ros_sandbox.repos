@@ -1,0 +1,5 @@
+repositories:
+  launch_ros_sandbox:
+    type: git
+    url: git@github.com:aws-robotics/launch-ros-sandbox.git
+    version: master
