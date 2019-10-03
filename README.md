@@ -53,6 +53,9 @@ mkdir -p ~/ros2_dashing_ros_launch_sandbox_ws/src
 cd ros2_dashing_ros_launch_sandbox_ws
 # Clone this package repository using vcs.
 curl https://raw.githubusercontent.com/aws-robotics/launch-ros-sandbox/master/launch_ros_sandbox.dashing.repos | vcs import src/
+# Install all required system dependencies
+rosdep update
+rosdep install --ignore-packages-from-source --from-paths src/
 # Use colcon to compile launch_ros_sandbox code and all its dependencies
 colcon build --packages-up-to launch_ros_sandbox
 ```
@@ -71,6 +74,11 @@ cd ros2_latest_ros_launch_sandbox_ws
 # Use vcs to clone all required repositories
 curl https://raw.githubusercontent.com/ros2/ros2/dashing/ros2.repos | vcs import src/
 curl https://raw.githubusercontent.com/aws-robotics/launch-ros-sandbox/master/launch_ros_sandbox.repos | vcs import src/
+# Install all required system dependencies
+# Some packages may fail to install, this is expected on an unstable branch,
+# and is generally OK.
+rosdep update
+rosdep install -r --rosdistro=eloquent --ignore-packages-from-source --from-paths src/
 # Use colcon to compile launch_ros_sandbox code and all its dependencies
 colcon build --packages-up-to launch_ros_sandbox
 ```
