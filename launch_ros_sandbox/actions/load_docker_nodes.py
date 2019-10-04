@@ -22,6 +22,7 @@ as a Docker container. This Action is not exported and should only be used inter
 
 from asyncio import CancelledError, Future
 from concurrent.futures import ThreadPoolExecutor
+import shlex
 from threading import Lock
 from types import GeneratorType
 from typing import List, Optional
@@ -43,7 +44,7 @@ from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[str]:
     """Prepare the command for executing within the Docker container."""
     # Use ros2 CLI command to find the executable
-    return entrypoint.split() + ['ros2', 'run', package, executable]
+    return shlex.split(entrypoint) + ['ros2', 'run', package, executable]
 
 
 def _get_none_container() -> Optional[docker.models.containers.Container]:
