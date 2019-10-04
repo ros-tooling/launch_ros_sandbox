@@ -32,7 +32,13 @@ sphinx_build = next(pathlib.Path('/').glob('**/sphinx-build'))
 # chosen as a starting point, because it excludes system bin
 # packages, and the venv is a subdirectory of the home dir.
 bin_directory = next(pathlib.Path.home().glob('**/bin'))
-os.symlink(sphinx_build, bin_directory / 'sphinx-build')
+
+try:
+    os.symlink(sphinx_build, bin_directory / 'sphinx-build')
+except FileExistsError:
+    # readthedocs re-use venvs acrosss multiple builds, which means that,
+    # sometimes, the sphinx-build will have been previously created.
+    pass
 
 package_name = 'sphinx_build_symlink'
 
