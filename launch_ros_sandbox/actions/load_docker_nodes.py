@@ -22,6 +22,7 @@ as a Docker container. This Action is not exported and should only be used inter
 
 from asyncio import CancelledError, Future
 from concurrent.futures import ThreadPoolExecutor
+import shlex
 from threading import Lock
 from types import GeneratorType
 from typing import List, Optional
@@ -43,7 +44,7 @@ from launch_ros_sandbox.descriptions.sandboxed_node import SandboxedNode
 def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[str]:
     """Prepare the command for executing within the Docker container."""
     # Use ros2 CLI command to find the executable
-    return [entrypoint, 'ros2', 'run', package, executable]
+    return shlex.split(entrypoint) + ['ros2', 'run', package, executable]
 
 
 def _get_none_container() -> Optional[docker.models.containers.Container]:
@@ -95,7 +96,7 @@ class LoadDockerNodes(Action):
 
         :raises ImageNotFound if Docker cannot find the remote repo for the image to pull
         """
-        self.__logger.debug('Pulling image {}'.format(self._policy.image_name))
+        self.__logger.info('Pulling image {}'.format(self._policy.image_name))
 
         # This method may throw an ImageNotFound exception. Let the exception propogate upwards
         self._docker_client.images.pull(
@@ -121,7 +122,7 @@ class LoadDockerNodes(Action):
             **tmp_run_args
         )
 
-        self.__logger.debug('Running Docker container: \"{}\"'.format(self._policy.container_name))
+        self.__logger.info('Running Docker container: \"{}\"'.format(self._policy.container_name))
 
     def _load_nodes_in_docker(
         self,
@@ -208,8 +209,9 @@ class LoadDockerNodes(Action):
         try:
             self._start_docker_container()
         except ImageNotFound as ex:
-            self.__logger.error('Image "{}" could not be found; execution of container "{}" failed.'
-                               .format(self._policy.image_name, self._policy.container_name))
+            self.__logger.error(
+                'Image "{}" could not be found; execution of container "{}" failed.'
+                .format(self._policy.image_name, self._policy.container_name))
             self.__logger.debug(ex)
 
             with self._shutdown_lock:
