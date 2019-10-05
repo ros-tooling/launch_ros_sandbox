@@ -15,7 +15,7 @@
 # limitations under the License.
 
 """
-Minimal example for demoing when an image not found locally nor on DockerHub is ran in DockerPolicy.
+Minimal example tries to run an image that doesn't exist locally or on DockerHub.
 
 This example tries to run a ROS 2 node in a Docker container that should not exist locally nor on
 DockerHub. The expected behavior is that launch logs to warn that the Image is not found and then
