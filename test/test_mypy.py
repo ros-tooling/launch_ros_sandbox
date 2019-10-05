@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
+
 import pytest
 
 
@@ -22,6 +24,9 @@ def test_mypy():
     # of the file. Until then, we still use it internally as developers.
     try:
         from ament_mypy.main import main
-        assert main(argv=[]) == 0, 'Found errors'
+        config_path = Path(__file__).parent / 'config' / 'mypy.ini'
+        print(config_path.resolve())
+        rc = main(argv=['launch_ros_sandbox', '--config', str(config_path.resolve())])
+        assert rc == 0, 'Found code style errors / warnings'
     except ImportError:
         pass

@@ -19,8 +19,7 @@ Using DockerPolicy, users can load one or more nodes into a particular Docker co
 DockerPolicy requires that Docker 18+ and docker-py 4.0+ is installed.
 
 Example:
---------
-
+-------
 .. code-block:: python
 
     ld = launch.LaunchDescription()
