@@ -13,7 +13,8 @@
 # limitations under the License.
 
 
-"""Looks for sphinx-build in lib/ and creates a symlink in bin/.
+"""
+Looks for sphinx-build in lib/ and creates a symlink in bin/.
 
 This workaround mitigates an issue in readthedocs with sphinx where the
 sphinx-build binary is installed in a directory which is not listed in PATH,
