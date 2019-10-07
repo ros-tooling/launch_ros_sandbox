@@ -15,6 +15,9 @@ addons:
 before_script:
 - sudo rosdep init
 - rosdep update
+branches:
+  only:
+  - master
 cache: apt
 dist: bionic
 language: generic
