@@ -20,7 +20,7 @@ LoadDockerNodes is an Action that controls the lifecycle of a sandboxed environm
 as a Docker container. This Action is not exported and should only be used internally.
 """
 
-from asyncio import CancelledError, Future, Task
+import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import shlex
 from threading import Lock
@@ -69,8 +69,8 @@ class LoadDockerNodes(Action):
         super().__init__(**kwargs)
         self._policy = policy
         self._node_descriptions = node_descriptions
-        self._completed_future = None  # type: Optional[Future]
-        self._started_task = None  # type: Optional[Task]
+        self._completed_future = None  # type: Optional[asyncio.Future]
+        self._started_task = None  # type: Optional[asyncio.Task]
         self._container = None  # type: Optional[docker.models.containers.Container]
         self._shutdown_lock = Lock()
         self._docker_client = docker.from_env()
@@ -213,7 +213,7 @@ class LoadDockerNodes(Action):
 
         self._load_nodes_in_docker(context)
 
-    def get_asyncio_future(self) -> Optional[Future]:
+    def get_asyncio_future(self) -> Optional[asyncio.Future]:
         """Return the asyncio Future that represents the lifecycle of the Docker container."""
         return self._completed_future
 
@@ -259,7 +259,7 @@ class LoadDockerNodes(Action):
             if self._started_task is not None:
                 try:
                     self._started_task.cancel()
-                except CancelledError:
+                except asyncio.CancelledError:
                     self._started_task = None
 
             if self._completed_future is not None:
