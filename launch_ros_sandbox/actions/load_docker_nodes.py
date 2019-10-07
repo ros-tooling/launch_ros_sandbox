@@ -20,7 +20,7 @@ LoadDockerNodes is an Action that controls the lifecycle of a sandboxed environm
 as a Docker container. This Action is not exported and should only be used internally.
 """
 
-from asyncio import CancelledError, Future
+from asyncio import CancelledError, Future, Task
 from concurrent.futures import ThreadPoolExecutor
 import shlex
 from threading import Lock
@@ -47,16 +47,6 @@ def _containerized_cmd(entrypoint: str, package: str, executable: str) -> List[s
     return shlex.split(entrypoint) + ['ros2', 'run', package, executable]
 
 
-def _get_none_container() -> Optional[docker.models.containers.Container]:
-    """
-    Return None.
-
-    Workaround for Python3.5 compliance, since we can't hint member variable types until 3.6
-    This lets us initialize a member variable as None but still note its type for mypy.
-    """
-    return None
-
-
 class LoadDockerNodes(Action):
     """
     LoadDockerNodes is an Action that controls the sandbox environment spawned by `DockerPolicy`.
@@ -79,9 +69,9 @@ class LoadDockerNodes(Action):
         super().__init__(**kwargs)
         self._policy = policy
         self._node_descriptions = node_descriptions
-        self._completed_future = None
-        self._started_task = None
-        self._container = None
+        self._completed_future = None  # type: Optional[Future]
+        self._started_task = None  # type: Optional[Task]
+        self._container = None  # type: Optional[docker.models.containers.Container]
         self._shutdown_lock = Lock()
         self._docker_client = docker.from_env()
         self.__logger = launch.logging.get_logger(__name__)
