@@ -1,3 +1,5 @@
+# Build the package under test from source, and all its dependencies, then run
+# the tests of the package under test.
 addons:
   apt:
     sources:
@@ -20,12 +22,23 @@ branches:
   - master
 cache: apt
 dist: bionic
+git:
+  clone: false
 language: generic
 script:
-- mkdir -p ~/ros2_latest_ros_launch_sandbox_ws/src
-- cd ~/ros2_latest_ros_launch_sandbox_ws
-- curl https://raw.githubusercontent.com/ros2/ros2/dashing/ros2.repos | vcs import src/
-- curl https://raw.githubusercontent.com/aws-robotics/launch-ros-sandbox/master/launch_ros_sandbox.repos | vcs import src/
+- mkdir -p ~/ros2_latest_launch_ros_sandbox_ws/src
+- cd ~/ros2_latest_launch_ros_sandbox_ws
+- curl https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos | vcs import src/
+# The repo file for the repository needs to be generated on-the-fly to incorporate the
+# custom repository URL and branch name, when a PR is being built.
+- |
+  vcs import src/ << EOF
+  repositories:
+    launch_ros_sandbox:
+      type: git
+      url: "https://github.com/${TRAVIS_REPO_SLUG}.git"
+      version: "${TRAVIS_BRANCH}"
+  EOF
 # RTI_NC_LICENSE_ACCEPTED avoids the interactive prompt asking to accept the
 # RTI Connext license.
 # For "latest" builds, rosdep often misses some keys, adding "|| true", to
