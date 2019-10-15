@@ -1,6 +1,6 @@
 # launch_ros_sandbox
 
-![License](https://img.shields.io/github/license/ros-security/launch-ros-sandbox)
+![License](https://img.shields.io/github/license/ros-security/launch_ros_sandbox)
 [![Documentation Status](https://readthedocs.org/projects/launch-ros-sandbox/badge/?version=latest)](https://launch-ros-sandbox.readthedocs.io/en/latest/?badge=latest)
 
 `launch_ros_sandbox` is a `roslaunch2` extension.
