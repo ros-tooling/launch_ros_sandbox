@@ -1,6 +1,6 @@
 # launch_ros_sandbox
 
-![License](https://img.shields.io/github/license/aws-robotics/launch-ros-sandbox)
+![License](https://img.shields.io/github/license/ros-security/launch-ros-sandbox)
 [![Documentation Status](https://readthedocs.org/projects/launch-ros-sandbox/badge/?version=latest)](https://launch-ros-sandbox.readthedocs.io/en/latest/?badge=latest)
 
 `launch_ros_sandbox` is a `roslaunch2` extension.
@@ -52,7 +52,7 @@ source /opt/ros/dashing/setup.sh
 mkdir -p ~/ros2_dashing_ros_launch_sandbox_ws/src
 cd ros2_dashing_ros_launch_sandbox_ws
 # Clone this package repository using vcs.
-curl https://raw.githubusercontent.com/aws-robotics/launch-ros-sandbox/master/launch_ros_sandbox.dashing.repos | vcs import src/
+curl https://raw.githubusercontent.com/ros-security/launch-ros-sandbox/master/launch_ros_sandbox.dashing.repos | vcs import src/
 # Install all required system dependencies
 rosdep update
 rosdep install --ignore-packages-from-source --from-paths src/
@@ -73,7 +73,7 @@ mkdir -p ~/ros2_latest_ros_launch_sandbox_ws/src
 cd ros2_latest_ros_launch_sandbox_ws
 # Use vcs to clone all required repositories
 curl https://raw.githubusercontent.com/ros2/ros2/dashing/ros2.repos | vcs import src/
-curl https://raw.githubusercontent.com/aws-robotics/launch-ros-sandbox/master/launch_ros_sandbox.repos | vcs import src/
+curl https://raw.githubusercontent.com/ros-security/launch-ros-sandbox/master/launch_ros_sandbox.repos | vcs import src/
 # Install all required system dependencies
 # Some packages may fail to install, this is expected on an unstable branch,
 # and is generally OK.
