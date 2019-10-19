@@ -14,6 +14,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: ros-tooling/setup-ros2@0.0.4
-    - uses: ros-tooling/action-ros2-ci@0.0.3
+    - uses: ros-tooling/action-ros2-ci@tmoulard/speedup
       with:
         package-name: launch_ros_sandbox
