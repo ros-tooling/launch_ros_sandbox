@@ -17,3 +17,19 @@ jobs:
     - uses: ros-tooling/action-ros2-ci@0.0.3
       with:
         package-name: launch_ros_sandbox
+    - name: Notify Chime chatroom (failure)
+      uses: thomas-moulard/action-amazon-chime@master
+      if: failure()
+      with:
+        message: |
+          [${{ github.workflow }}][${{ github.event_name }}] :heavy_exclamation_mark: Test Failure
+          Link to GitHub Action run: https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks
+        webhook: ${{ secrets.chimeRoomWebhoolUrl }}
+    - name: Notify Chime chatroom (success)
+      uses: thomas-moulard/action-amazon-chime@master
+      if: success()
+      with:
+        message: |
+          [${{ github.workflow }}][${{ github.event_name }}] :heavy_exclamation_mark: Test Succeeded
+          Link to GitHub Action run: https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks
+        webhook: ${{ secrets.chimeRoomWebhoolUrl }}
