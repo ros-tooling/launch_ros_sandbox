@@ -32,8 +32,13 @@ sudo usermod -aG docker $USER
 
 ### Binary Packages
 
-`launch_ros_sandbox` is not yet available as a binary package using APT or
-any other method.
+#### Dashing
+
+On Ubuntu 18.04, you can install `launch_ros_sandbox` by running:
+
+```sh
+sudo apt install ros-dashing-launch-ros-sandbox
+```
 
 ### Installing from source
 
