@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = launch-ros-sandbox
+SPHINXPROJ    = launch_ros_sandbox
 SOURCEDIR     = source
 BUILDDIR      = build
 
