@@ -14,7 +14,7 @@
 # limitations under the License.
 # -*- coding: utf-8 -*-
 #
-# launch-ros-sandbox documentation build configuration file, created by
+# launch_ros_sandbox documentation build configuration file, created by
 # sphinx-quickstart on Thu Sep 19 08:53:28 2019.
 #
 # This file is execfile()d with the current directory set to its
@@ -138,7 +138,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'launch-ros-sandboxdoc'
+htmlhelp_basename = 'launch_ros_sandboxdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -165,7 +165,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'launch-ros-sandbox.tex', 'launch-ros-sandbox Documentation',
+    (master_doc, 'launch_ros_sandbox.tex', 'launch_ros_sandbox Documentation',
      'AWS Robomaker', 'manual'),
 ]
 
@@ -175,7 +175,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'launch-ros-sandbox', 'launch-ros-sandbox Documentation',
+    (master_doc, 'launch_ros_sandbox', 'launch_ros_sandbox Documentation',
      [author], 1)
 ]
 
@@ -186,7 +186,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'launch-ros-sandbox', 'launch-ros-sandbox Documentation',
-     author, 'launch-ros-sandbox', 'One line description of project.',
+    (master_doc, 'launch_ros_sandbox', 'launch_ros_sandbox Documentation',
+     author, 'launch_ros_sandbox', 'One line description of project.',
      'Miscellaneous'),
 ]

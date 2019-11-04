@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
-set SPHINXPROJ=launch-ros-sandbox
+set SPHINXPROJ=launch_ros_sandbox
 
 if "%1" == "" goto help
 

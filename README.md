@@ -1,7 +1,7 @@
 # launch_ros_sandbox
 
 ![License](https://img.shields.io/github/license/ros-security/launch_ros_sandbox)
-[![Documentation Status](https://readthedocs.org/projects/launch-ros-sandbox/badge/?version=latest)](https://launch-ros-sandbox.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/launch_ros_sandbox/badge/?version=latest)](https://launch_ros_sandbox.readthedocs.io/en/latest/?badge=latest)
 
 `launch_ros_sandbox` is a `roslaunch2` extension.
 
@@ -32,8 +32,13 @@ sudo usermod -aG docker $USER
 
 ### Binary Packages
 
-`launch_ros_sandbox` is not yet available as a binary package using APT or
-any other method.
+#### Dashing
+
+On Ubuntu 18.04, you can install `launch_ros_sandbox` by running:
+
+```sh
+sudo apt install ros-dashing-launch-ros-sandbox
+```
 
 ### Installing from source
 
@@ -52,7 +57,7 @@ source /opt/ros/dashing/setup.sh
 mkdir -p ~/ros2_dashing_ros_launch_sandbox_ws/src
 cd ros2_dashing_ros_launch_sandbox_ws
 # Clone this package repository using vcs.
-curl https://raw.githubusercontent.com/ros-security/launch-ros-sandbox/master/launch_ros_sandbox.dashing.repos | vcs import src/
+curl https://raw.githubusercontent.com/ros-security/launch_ros_sandbox/master/launch_ros_sandbox.dashing.repos | vcs import src/
 # Install all required system dependencies
 rosdep update
 rosdep install --ignore-packages-from-source --from-paths src/
@@ -73,7 +78,7 @@ mkdir -p ~/ros2_latest_ros_launch_sandbox_ws/src
 cd ros2_latest_ros_launch_sandbox_ws
 # Use vcs to clone all required repositories
 curl https://raw.githubusercontent.com/ros2/ros2/dashing/ros2.repos | vcs import src/
-curl https://raw.githubusercontent.com/ros-security/launch-ros-sandbox/master/launch_ros_sandbox.repos | vcs import src/
+curl https://raw.githubusercontent.com/ros-security/launch_ros_sandbox/master/launch_ros_sandbox.repos | vcs import src/
 # Install all required system dependencies
 # Some packages may fail to install, this is expected on an unstable branch,
 # and is generally OK.
@@ -131,6 +136,6 @@ This library is licensed under the Apache 2.0 License.
 | Dashing       | `dashing-devel` | [![Build Status](http://build.ros2.org/buildStatus/icon?job=Ddev__launch_ros_sandbox__ubuntu_bionic_amd64)](http://build.ros2.org/job/Ddev__launch_ros_sandbox__ubuntu_bionic_amd64) | [![Build Status](http://build.ros2.org/buildStatus/icon?job=Dsrc_uB__launch_ros_sandbox__ubuntu_bionic__source)](http://build.ros2.org/job/Dsrc_uB__launch_ros_sandbox__ubuntu_bionic__source) | [![Build Status](http://build.ros2.org/buildStatus/icon?job=Dbin_uB64__launch_ros_sandbox__ubuntu_bionic_amd64__binary)](http://build.ros2.org/job/Dbin_uB64__launch_ros_sandbox__ubuntu_bionic_amd64__binary) | N/A | N/A |
 
 [ex_minimal_sandboxed_node_container_launch]: examples/minimal_sandboxed_node_container.launch.py
-[launch_ros_sandbox_doc]: https://launch-ros-sandbox.readthedocs.io
+[launch_ros_sandbox_doc]: https://launch_ros_sandbox.readthedocs.io
 [ros2_dashing_setup]: https://index.ros.org/doc/ros2/Installation/Dashing/
 [ros2_latest_setup]: https://index.ros.org/doc/ros2/Installation/Latest-Development-Setup/
