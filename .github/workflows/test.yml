@@ -11,9 +11,25 @@ on:
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+          os: [macOS-10.14, ubuntu-18.04]
     steps:
-    - uses: ros-tooling/setup-ros2@0.0.4
-    - uses: ros-tooling/action-ros2-ci@0.0.3
+    - uses: ros-tooling/setup-ros2@0.0.5
+    - uses: ros-tooling/action-ros2-ci@0.0.6
       with:
         package-name: launch_ros_sandbox
+    # GitHub action support is currently broken on the original upstream
+    # repository. This fork fixes support until the problem is fixed upstream.
+    - uses: ros-tooling/codecov-action@master
+      if: matrix.os == 'ubuntu-18.04'
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+        file: ros2_ws/src/launch_ros_sandbox/coverage.xml
+        # codecov-action is a Docker action, and as such can only run on Linux.
+    - uses: actions/upload-artifact@master
+      with:
+        name: colcon-logs-${{ matrix.os }}
+        path: ros2_ws/log
