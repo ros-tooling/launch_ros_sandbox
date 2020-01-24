@@ -17,8 +17,8 @@ jobs:
       matrix:
           os: [macOS-10.14, ubuntu-18.04]
     steps:
-    - uses: ros-tooling/setup-ros2@0.0.5
-    - uses: ros-tooling/action-ros2-ci@0.0.6
+    - uses: ros-tooling/setup-ros@0.0.13
+    - uses: ros-tooling/action-ros-ci@0.0.13
       with:
         package-name: launch_ros_sandbox
     - uses: codecov/codecov-action@v1
