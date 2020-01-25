@@ -27,7 +27,7 @@ jobs:
       if: matrix.os == 'ubuntu-18.04'
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ros2_ws/src/launch_ros_sandbox/coverage.xml
+        file: ros_ws/src/launch_ros_sandbox/coverage.xml
         flags: unittests
         name: codecov-umbrella
         yml: ./codecov.yml
