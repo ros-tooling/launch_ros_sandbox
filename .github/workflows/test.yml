@@ -35,4 +35,4 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: colcon-logs-${{ matrix.os }}
-        path: ros2_ws/log
+        path: ros_ws/log
