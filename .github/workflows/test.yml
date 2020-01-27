@@ -17,8 +17,8 @@ jobs:
       matrix:
           os: [macOS-10.14, ubuntu-18.04]
     steps:
-    - uses: ros-tooling/setup-ros2@0.0.5
-    - uses: ros-tooling/action-ros2-ci@0.0.6
+    - uses: ros-tooling/setup-ros@0.0.13
+    - uses: ros-tooling/action-ros-ci@0.0.13
       with:
         package-name: launch_ros_sandbox
     - uses: codecov/codecov-action@v1
@@ -27,7 +27,7 @@ jobs:
       if: matrix.os == 'ubuntu-18.04'
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ros2_ws/src/launch_ros_sandbox/coverage.xml
+        file: ros_ws/src/launch_ros_sandbox/coverage.xml
         flags: unittests
         name: codecov-umbrella
         yml: ./codecov.yml
@@ -35,4 +35,4 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: colcon-logs-${{ matrix.os }}
-        path: ros2_ws/log
+        path: ros_ws/log
