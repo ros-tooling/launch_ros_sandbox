@@ -167,8 +167,8 @@ class LoadDockerNodes(Action):
             if not log:
                 pass  # Sometimes we receive None
             elif isinstance(log, GeneratorType):
-                for l in log:
-                    self.__logger.info(l.decode('utf-8').strip())
+                for text in log:
+                    self.__logger.info(text.decode('utf-8').strip())
             else:
                 try:
                     self.__logger.info(log.decode('utf-8').strip())
