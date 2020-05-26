@@ -135,3 +135,4 @@ dmypy.json
 
 .flake8
 .DS_Store
+.vscode

@@ -14,7 +14,7 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: ros-tooling/setup-ros@0.0.20
-    - uses: ros-tooling/action-ros-ci@0.0.15
+    - uses: ros-tooling/action-ros-ci@0.0.16
       with:
         package-name: launch_ros_sandbox
     - uses: actions/upload-artifact@v1
