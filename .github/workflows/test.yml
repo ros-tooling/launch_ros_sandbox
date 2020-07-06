@@ -17,7 +17,7 @@ jobs:
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         package-name: launch_ros_sandbox
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v2.0.1
       with:
         name: colcon-logs-macOS
         path: ros_ws/log
@@ -40,7 +40,7 @@ jobs:
         name: codecov-umbrella
         yml: ./codecov.yml
         fail_ci_if_error: true
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v2.0.1
       with:
         name: colcon-logs-ubuntu
         path: ros_ws/log
