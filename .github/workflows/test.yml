@@ -14,7 +14,7 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: ros-tooling/setup-ros@0.0.25
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - uses: ros-tooling/action-ros-ci@0.0.18
       with:
         package-name: launch_ros_sandbox
     - uses: actions/upload-artifact@v1
@@ -29,7 +29,7 @@ jobs:
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - uses: ros-tooling/action-ros-ci@0.0.18
       with:
         package-name: launch_ros_sandbox
     - uses: codecov/codecov-action@v1.0.10
