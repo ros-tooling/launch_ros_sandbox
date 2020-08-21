@@ -38,7 +38,12 @@ jobs:
         file: ros_ws/src/launch_ros_sandbox/coverage.xml
         flags: unittests
         name: codecov-umbrella
-        fail_ci_if_error: true
+        # codecov sometimes fail to upload the report, this
+        # leads to flaky build failures.
+        # In the future, it may be interesting to have a separate
+        # job for coverage reports with a higher tolerance for failure
+        # and/or add retry logic to the action.
+        fail_ci_if_error: false
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-ubuntu
