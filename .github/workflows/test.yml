@@ -38,7 +38,6 @@ jobs:
         file: ros_ws/src/launch_ros_sandbox/coverage.xml
         flags: unittests
         name: codecov-umbrella
-        yml: ./codecov.yml
         # codecov sometimes fail to upload the report, this
         # leads to flaky build failures.
         # In the future, it may be interesting to have a separate
