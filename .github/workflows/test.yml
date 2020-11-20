@@ -14,9 +14,10 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: ros-tooling/setup-ros@0.0.26
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - uses: ros-tooling/action-ros-ci@0.1.0
       with:
         package-name: launch_ros_sandbox
+        target-ros2-distro: foxy
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-macOS
@@ -27,11 +28,10 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-focal-latest
     steps:
-    # TODO(setup-ros-docker#7): calling chown is necessary for now
-    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - uses: ros-tooling/action-ros-ci@0.1.0
       with:
         package-name: launch_ros_sandbox
+        target-ros2-distro: foxy
     - uses: codecov/codecov-action@v1.0.14
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
