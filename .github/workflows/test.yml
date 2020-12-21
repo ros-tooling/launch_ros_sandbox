@@ -32,7 +32,7 @@ jobs:
       with:
         package-name: launch_ros_sandbox
         target-ros2-distro: foxy
-    - uses: codecov/codecov-action@v1.1.0
+    - uses: codecov/codecov-action@v1.1.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ros_ws/src/launch_ros_sandbox/coverage.xml
