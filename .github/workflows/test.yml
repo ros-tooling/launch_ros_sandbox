@@ -14,12 +14,11 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: ros-tooling/setup-ros@v0.1
-      with:
-        required-ros-distributions: rolling
     - uses: ros-tooling/action-ros-ci@v0.2
       with:
         package-name: launch_ros_sandbox
         target-ros2-distro: rolling
+        vcs-repo-file-url: https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-macOS
