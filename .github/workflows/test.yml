@@ -33,7 +33,7 @@ jobs:
       with:
         package-name: launch_ros_sandbox
         target-ros2-distro: rolling
-    - uses: codecov/codecov-action@v1.2.1
+    - uses: codecov/codecov-action@v1.3.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ros_ws/src/launch_ros_sandbox/coverage.xml
