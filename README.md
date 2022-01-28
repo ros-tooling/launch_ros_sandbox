@@ -1,3 +1,7 @@
+# DEPRECATED package
+
+This package is no longer under development. It was built for a 2019 Roscon workshop and has no future planned usage or maintenance. Repository not deleted for historical reasons (so as not to break existing indexes that contain links to it)
+
 # launch_ros_sandbox
 
 ![License](https://img.shields.io/github/license/ros-security/launch_ros_sandbox)
